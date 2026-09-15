@@ -18,6 +18,11 @@
   const types = [...new Set(data.weapons.map(w => w.type))];
   let language, pack, t, formatter, active = null, lastFocus = null;
   let searchTimer;
+  let randomSeed = null;
+  const randomLabels = {ko:'랜덤 무기',en:'Random weapons',ja:'ランダムブキ',de:'Zufällige Waffen',es:'Armas aleatorias',fr:'Armes aléatoires',it:'Armi casuali',nl:'Willekeurige wapens',ru:'Случайное оружие','zh-Hans':'随机武器','zh-Hant':'隨機武器'};
+  const randomOption = new Option('', 'random');
+  randomOption.hidden = true;
+  $('sort').append(randomOption);
   function initialLanguage() {
     try {
       const saved = localStorage.getItem('ink-armory-language');
@@ -34,6 +39,8 @@
     language = data.languages[code] ? code : 'KRko';
     pack = data.languages[language];
     t = ui[groups[language]];
+    $('random').title = $('random').ariaLabel = randomLabels[groups[language]];
+    randomOption.textContent = randomLabels[groups[language]];
     formatter = new Intl.NumberFormat(pack.locale, {maximumFractionDigits:3});
     document.documentElement.lang = pack.locale;
     document.title = `${t.title} · Splatoon 3`;
@@ -48,10 +55,12 @@
     try { localStorage.setItem('ink-armory-language', language); } catch { /* Optional. */ }
   }
   function writeURL() {
-    const params = new URLSearchParams({lang:language});
+    const params = new URLSearchParams();
+    if (randomSeed !== null) params.set('rand', randomSeed);
+    params.set('lang', language);
     if ($('search').value) params.set('q', $('search').value);
     if ($('type').value) params.set('type', $('type').value);
-    if ($('sort').value !== 'default') params.set('sort', $('sort').value);
+    if (randomSeed === null && $('sort').value !== 'default') params.set('sort', $('sort').value);
     if (active) params.set('weapon', active);
     history.replaceState(null, '', '#' + params);
   }
@@ -60,7 +69,7 @@
     const query = normalize($('search').value);
     const needles = query.split(' ').filter(Boolean);
     const type = $('type').value;
-    const results = data.weapons.filter(w => {
+    const results = randomSeed !== null ? window.WEAPON_RANDOM.shuffle(data.weapons, randomSeed) : data.weapons.filter(w => {
       if (type && w.type !== type) return false;
       const text = normalize([pack.names[w.key], pack.sub[w.sub], pack.special[w.special], w.key, w.id].join(' '));
       return needles.every(word => text.includes(word));
@@ -71,10 +80,21 @@
     if (mode === 'rank') results.sort((a,b) => (a.rank < 0 ? Infinity : a.rank) - (b.rank < 0 ? Infinity : b.rank));
     $('count').textContent = `${num(results.length)} / ${num(data.weapons.length)} ${t.results}`;
     $('empty').hidden = results.length !== 0;
-    $('catalogue').innerHTML = results.map((w, i) => `<button type="button" class="weapon-card" data-weapon="${esc(w.key)}" title="${esc(pack.names[w.key])}" aria-label="${esc(pack.names[w.key])}" aria-haspopup="dialog">
+    $('catalogue').classList.toggle('random-catalogue', randomSeed !== null);
+    const cards = results.map((w, i) => `<button type="button" class="weapon-card" data-weapon="${esc(w.key)}" title="${esc(pack.names[w.key])}" aria-label="${esc(pack.names[w.key])}" aria-haspopup="dialog">
       <span class="card-art"><span class="card-code">${String(w.id).padStart(4,'0')}</span><img src="${asset('Path_Wst_', w.key)}" width="256" height="256" alt="" loading="${i < 12 ? 'eager' : 'lazy'}" decoding="async">
       <span class="card-kit" aria-hidden="true"><img src="${asset('Wsb_',w.sub+'00')}" width="24" height="24" alt="" loading="lazy"><img src="${asset('Wsp_',w.special+'00')}" width="24" height="24" alt="" loading="lazy"></span></span>
-      <span class="card-name">${esc(pack.names[w.key])}</span><span class="card-meta"><span>${esc(pack.types[w.type])}</span><span>${num(w.sp)} SP</span></span></button>`).join('');
+      <span class="card-name">${esc(pack.names[w.key])}</span><span class="card-meta"><span>${esc(pack.types[w.type])}</span><span>${num(w.sp)} SP</span></span></button>`);
+    $('catalogue').innerHTML = randomSeed === null ? cards.join('') : Array.from({length:Math.ceil(cards.length/4)}, (_, i) => `<section class="random-group" aria-labelledby="random-group-${i}"><h2 class="group-number" id="random-group-${i}">${num(i+1)}</h2><div class="group-weapons">${cards.slice(i*4,i*4+4).join('')}</div></section>`).join('');
+  }
+  function setRandom(seed) {
+    randomSeed = seed;
+    randomOption.hidden = seed === null;
+    $('random').setAttribute('aria-pressed', String(seed !== null));
+    if (seed !== null) {
+      clearTimeout(searchTimer);
+      $('search').value = ''; $('type').value = ''; $('sort').value = 'random';
+    } else if ($('sort').value === 'random') $('sort').value = 'default';
   }
   function dialogue(text, target) {
     target.replaceChildren();
@@ -189,6 +209,7 @@
     if (save) writeURL();
   }
   function reset() {
+    setRandom(null);
     clearTimeout(searchTimer);
     $('search').value = ''; $('type').value = ''; $('sort').value = 'default';
     renderList(); writeURL(); $('search').focus();
@@ -199,6 +220,7 @@
     $('search').value = params.get('q') || '';
     $('type').value = types.includes(params.get('type')) ? params.get('type') : '';
     $('sort').value = ['default','name','sp','rank'].includes(params.get('sort')) ? params.get('sort') : 'default';
+    setRandom(params.get('rand') || null);
     renderList();
     const key = params.get('weapon');
     if (byKey.has(key)) openWeapon(key, false);
@@ -211,10 +233,14 @@
   $('filters').addEventListener('submit', e => e.preventDefault());
   $('filters').addEventListener('reset', e => { e.preventDefault(); reset(); });
   $('empty-reset').addEventListener('click', reset);
+  $('random').addEventListener('click', () => {
+    setRandom(window.WEAPON_RANDOM.newSeed()); renderList(); writeURL();
+  });
   $('search').addEventListener('input', () => {
+    setRandom(null);
     clearTimeout(searchTimer); searchTimer = setTimeout(() => {renderList(); writeURL();}, 180);
   });
-  ['type','sort'].forEach(id => $(id).addEventListener('change', () => {renderList(); writeURL();}));
+  ['type','sort'].forEach(id => $(id).addEventListener('change', () => {setRandom(null); renderList(); writeURL();}));
   $('catalogue').addEventListener('click', e => {
     const button = e.target.closest('[data-weapon]'); if (button) openWeapon(button.dataset.weapon);
   });

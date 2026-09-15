@@ -130,4 +130,11 @@ input:active,select:active{border-color:var(--color-ink)}
 
 /* Compact heading-free catalogue. */
 .intro{justify-content:flex-end;padding:var(--space-md) 0}
+.random-button{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;background:transparent;color:var(--color-ink);border:0}
+.random-button[aria-pressed="true"]{background:var(--color-accent)}
+.catalogue.random-catalogue{display:block}
+.random-group{display:grid;grid-template-columns:2ch minmax(0,1fr);gap:var(--space-md);border-top:var(--rule-strong) solid var(--color-ink);padding-block:var(--space-lg)}
+.group-number{margin:0;font:800 var(--text-xl)/1 var(--font-display)}
+.group-weapons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-lg) var(--space-md)}
+@media(min-width:48rem){.group-weapons{grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--space-lg)}}
 @media(max-width:25rem){.intro{display:flex}.edition{margin-top:0}}

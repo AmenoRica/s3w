@@ -10,6 +10,7 @@
   <script src="data.js" defer></script>
   <script src="ui.js" defer></script>
   <script src="guides.js" defer></script>
+  <script src="random.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body>
@@ -32,6 +33,7 @@
   <main>
     <div class="intro">
       <span class="edition">Ver. 11.3.0</span>
+      <button id="random" class="random-button" type="button" aria-label="랜덤 무기" title="랜덤 무기" aria-pressed="false"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8" cy="8" r="1.5"/><circle cx="16" cy="8" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8" cy="16" r="1.5"/><circle cx="16" cy="16" r="1.5"/></g></svg></button>
     </div>
     <form id="filters" class="filters" role="search">
       <label class="search-control"><span data-ui="search">무기 검색</span><input id="search" type="search" autocomplete="off" spellcheck="false" placeholder="무기 · 서브 · 스페셜 이름"></label>
