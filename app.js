@@ -57,7 +57,7 @@
     randomOption.textContent = randomLabels[groups[language]];
     formatter = new Intl.NumberFormat(pack.locale, {maximumFractionDigits:3});
     document.documentElement.lang = pack.locale;
-    document.title = `${t.title} · Splatoon 3`;
+    document.title = '스플래툰 3 무기 데이터베이스';
     $('catalogue').setAttribute('aria-label', t.title);
     document.querySelectorAll('[data-ui]').forEach(el => { el.textContent = t[el.dataset.ui]; });
     $('language').value = language;
