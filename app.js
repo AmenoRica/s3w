@@ -100,10 +100,11 @@
       <span class="card-art"><span class="card-code">${String(w.id).padStart(4,'0')}</span><img src="${asset('Path_Wst_', w.key)}" width="256" height="256" alt="" loading="${i < 12 ? 'eager' : 'lazy'}" decoding="async">
       <span class="card-kit" aria-hidden="true"><img src="${asset('Wsb_',w.sub+'00')}" width="24" height="24" alt="" loading="lazy"><img src="${asset('Wsp_',w.special+'00')}" width="24" height="24" alt="" loading="lazy"></span></span>
       <span class="card-name">${esc(pack.names[w.key])}</span><span class="card-meta"><span>${esc(pack.types[w.type])}</span><span>${num(w.sp)} SP</span></span></button>`);
-    $('catalogue').innerHTML = randomSeed === null ? cards.join('') : Array.from({length:Math.ceil(cards.length/4)}, (_, i) => `<section class="random-group" aria-labelledby="random-group-${i}" id="team-${i+1}"><div class="group-heading"><h2 class="group-number" id="random-group-${i}">${num(i+1)}</h2><button type="button" class="copy-team" data-team="${i+1}" aria-live="polite">${esc(copyLabels[groups[language]][0])}</button></div><div class="group-weapons">${cards.slice(i*4,i*4+4).join('')}</div></section>`).join('');
+    $('catalogue').innerHTML = randomSeed === null ? cards.join('') : Array.from({length:Math.ceil(cards.length/4)}, (_, i) => `<section class="random-group" aria-labelledby="random-group-${i}" id="team-${i+1}"><div class="group-heading"><h2 class="group-number" id="random-group-${i}">${num(i+1)}</h2><button type="button" class="copy-team" data-team="${i+1}" aria-live="polite"><span class="copy-label">${esc(copyLabels[groups[language]][0])}</span>${copyLabels[groups[language]].slice(0,3).map(label => `<span class="copy-size" aria-hidden="true">${esc(label)}</span>`).join('')}</button></div><div class="group-weapons">${cards.slice(i*4,i*4+4).join('')}</div></section>`).join('');
   }
   async function copyTeam(button) {
     const labels = copyLabels[groups[language]];
+    const label = button.querySelector('.copy-label');
     const team = Number(button.dataset.team);
     const names = Array.from(button.closest('.random-group').querySelectorAll('.card-name'), el => el.textContent);
     const url = new URL(location.protocol === 'file:' ? 'https://amenorica.github.io/splatoon3-weapon-browser/' : location.href);
@@ -121,10 +122,10 @@
         try { if (!document.execCommand('copy')) throw new Error('Copy failed'); }
         finally { input.remove(); button.focus({preventScroll:true}); }
       }
-      button.textContent = labels[1];
-    } catch { button.textContent = labels[2]; }
+      label.textContent = labels[1];
+    } catch { label.textContent = labels[2]; }
     finally { button.disabled = false; }
-    setTimeout(() => { if (button.isConnected) button.textContent = labels[0]; }, 1800);
+    setTimeout(() => { if (button.isConnected) label.textContent = labels[0]; }, 1800);
   }
   function setRandom(seed) {
     randomTeam = null;
