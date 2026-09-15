@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#242329">
+  <meta name="description" content="스플래툰 3 주무기 정보, 상세 성능, 부키치의 무기 설명. 11개 언어 및 지역별 번역 지원.">
+  <title>무기 진열장 · Splatoon 3</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="data.js" defer></script>
+  <script src="ui.js" defer></script>
+  <script src="guides.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <svg class="icon-filters" xmlns="http://www.w3.org/2000/svg" width="0" height="0" aria-hidden="true">
+    <defs>
+      <filter id="icon-ink" color-interpolation-filters="sRGB">
+        <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0 1" result="opaque"/>
+        <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -1 -1 -1 0 1" result="mask"/>
+        <feFlood style="flood-color:var(--color-paper)"/>
+        <feComposite in2="mask" operator="in" result="ink"/>
+        <feComposite in="opaque" in2="ink" operator="arithmetic" k2="1" k3="1"/>
+        <feComposite in2="SourceAlpha" operator="in"/>
+      </filter>
+    </defs>
+  </svg>
+  <header class="masthead">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">W.</span></div>
+    <label class="language-control"><select id="language" aria-label="언어"><option value="KRko">한국어</option></select></label>
+  </header>
+  <main>
+    <div class="intro">
+      <span class="edition">Ver. 11.3.0</span>
+    </div>
+    <form id="filters" class="filters" role="search">
+      <label class="search-control"><span data-ui="search">무기 검색</span><input id="search" type="search" autocomplete="off" spellcheck="false" placeholder="무기 · 서브 · 스페셜 이름"></label>
+      <label><span data-ui="type">무기 종류</span><select id="type"><option value="" data-ui="all">전체</option></select></label>
+      <label><span data-ui="sort">정렬</span><select id="sort"><option value="default" data-ui="defaultSort">게임 순서</option><option value="name" data-ui="nameSort">이름순</option><option value="sp" data-ui="spSort">필요 SP순</option><option value="rank" data-ui="rankSort">해금 랭크순</option></select></label>
+      <button id="reset" type="reset" data-ui="reset">초기화</button>
+    </form>
+    <div class="result-line"><p id="count" role="status" aria-live="polite">데이터를 불러오는 중…</p><span class="ink-rule" aria-hidden="true"></span></div>
+    <div id="error" class="empty" role="alert" hidden><p data-ui="error"></p><button id="retry" data-ui="retry">다시 열기</button></div>
+    <div id="empty" class="empty" hidden><h2 data-ui="empty">일치하는 무기가 없습니다.</h2><p data-ui="emptyHint">검색어나 무기 종류를 바꿔 보세요.</p><button id="empty-reset" data-ui="reset">초기화</button></div>
+    <div id="catalogue" class="catalogue" aria-label="무기 진열장"></div>
+    <noscript><p>JavaScript를 켜 주세요. Enable JavaScript to browse the weapons.</p></noscript>
+  </main>
+  <footer><p data-ui="footer">비공식 팬 페이지 · 게임 이미지와 문구 © Nintendo</p><a id="data-source" href="https://github.com/Leanny/splat3" target="_blank" rel="noopener noreferrer">Leanny / splat3 ↗</a></footer>
+  <dialog id="detail" aria-labelledby="weapon-title">
+    <div class="dialog-toolbar"><span id="detail-class"></span><button id="close" type="button"><span data-ui="close">닫기</span><span aria-hidden="true"> ×</span></button></div>
+    <div id="detail-body" class="detail-body"></div>
+  </dialog>
+</body>
+</html>

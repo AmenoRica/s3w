@@ -1,0 +1,41 @@
+{
+  "repository": "Leanny/splat3",
+  "commit": "7280ff9cde8bb1c5dcef46c700c326471584d2e6",
+  "version": "1130",
+  "weapons": 174,
+  "parameterFiles": 65,
+  "locales": [
+    "KRko",
+    "JPja",
+    "USen",
+    "EUen",
+    "EUde",
+    "EUes",
+    "USes",
+    "EUfr",
+    "USfr",
+    "EUit",
+    "EUnl",
+    "EUru",
+    "CNzh",
+    "TWzh"
+  ],
+  "descriptionCounts": {
+    "KRko": 159,
+    "JPja": 159,
+    "USen": 159,
+    "EUen": 159,
+    "EUde": 159,
+    "EUes": 159,
+    "USes": 159,
+    "EUfr": 159,
+    "USfr": 159,
+    "EUit": 159,
+    "EUnl": 159,
+    "EUru": 159,
+    "CNzh": 159,
+    "TWzh": 159
+  },
+  "assets": 208,
+  "dataSha256": "5a884a839b537be4626a274f5d2a0fec2e80494116f7656601def822f75c3b12"
+}
