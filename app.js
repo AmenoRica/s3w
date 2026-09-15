@@ -128,6 +128,7 @@
   }
   function setRandom(seed) {
     randomTeam = null;
+    history.scrollRestoration = 'auto';
     randomSeed = seed;
     randomOption.hidden = seed === null;
     $('random').setAttribute('aria-pressed', String(seed !== null));
@@ -267,7 +268,13 @@
     const key = params.get('weapon');
     if (byKey.has(key)) openWeapon(key, false);
     else if ($('detail').open) $('detail').close();
-    if (randomTeam !== null && !byKey.has(key)) $(`team-${randomTeam}`).scrollIntoView({block:'start'});
+    history.scrollRestoration = randomTeam !== null ? 'manual' : 'auto';
+    if (randomTeam !== null && !byKey.has(key)) scrollToTeam();
+  }
+  function scrollToTeam() {
+    requestAnimationFrame(() => {
+      if (randomTeam !== null && !$('detail').open) $(`team-${randomTeam}`)?.scrollIntoView({block:'start'});
+    });
   }
   $('language').replaceChildren(...Object.entries(data.languages).map(([code,l]) => new Option(l.label,code)));
   $('language').addEventListener('change', () => {
@@ -300,5 +307,6 @@
     if (lastFocus?.isConnected) lastFocus.focus({preventScroll:true});
   });
   window.addEventListener('hashchange', readURL);
+  window.addEventListener('load', scrollToTeam);
   readURL();
 })();
