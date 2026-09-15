@@ -19,6 +19,20 @@
   let language, pack, t, formatter, active = null, lastFocus = null;
   let searchTimer;
   let randomSeed = null;
+  let randomTeam = null;
+  const copyLabels = {
+    ko:['복사하기','복사됨','다시 시도','{n}번째 랜덤 무기 팀'],
+    en:['Copy','Copied','Retry','Random weapon team {n}'],
+    ja:['コピー','コピー済み','再試行','ランダムブキチーム {n}'],
+    de:['Kopieren','Kopiert','Erneut','Zufälliges Waffenteam {n}'],
+    es:['Copiar','Copiado','Reintentar','Equipo de armas aleatorias {n}'],
+    fr:['Copier','Copié','Réessayer','Équipe d’armes aléatoires {n}'],
+    it:['Copia','Copiato','Riprova','Squadra di armi casuali {n}'],
+    nl:['Kopieer','Gekopieerd','Opnieuw','Willekeurig wapenteam {n}'],
+    ru:['Копировать','Скопировано','Повторить','Команда случайного оружия {n}'],
+    'zh-Hans':['复制','已复制','重试','第{n}组随机武器队伍'],
+    'zh-Hant':['複製','已複製','重試','第{n}組隨機武器隊伍']
+  };
   const randomLabels = {ko:'랜덤 무기',en:'Random weapons',ja:'ランダムブキ',de:'Zufällige Waffen',es:'Armas aleatorias',fr:'Armes aléatoires',it:'Armi casuali',nl:'Willekeurige wapens',ru:'Случайное оружие','zh-Hans':'随机武器','zh-Hant':'隨機武器'};
   const randomOption = new Option('', 'random');
   randomOption.hidden = true;
@@ -57,6 +71,7 @@
   function writeURL() {
     const params = new URLSearchParams();
     if (randomSeed !== null) params.set('rand', randomSeed);
+    if (randomSeed !== null && randomTeam !== null) params.set('team', randomTeam);
     params.set('lang', language);
     if ($('search').value) params.set('q', $('search').value);
     if ($('type').value) params.set('type', $('type').value);
@@ -85,9 +100,34 @@
       <span class="card-art"><span class="card-code">${String(w.id).padStart(4,'0')}</span><img src="${asset('Path_Wst_', w.key)}" width="256" height="256" alt="" loading="${i < 12 ? 'eager' : 'lazy'}" decoding="async">
       <span class="card-kit" aria-hidden="true"><img src="${asset('Wsb_',w.sub+'00')}" width="24" height="24" alt="" loading="lazy"><img src="${asset('Wsp_',w.special+'00')}" width="24" height="24" alt="" loading="lazy"></span></span>
       <span class="card-name">${esc(pack.names[w.key])}</span><span class="card-meta"><span>${esc(pack.types[w.type])}</span><span>${num(w.sp)} SP</span></span></button>`);
-    $('catalogue').innerHTML = randomSeed === null ? cards.join('') : Array.from({length:Math.ceil(cards.length/4)}, (_, i) => `<section class="random-group" aria-labelledby="random-group-${i}"><h2 class="group-number" id="random-group-${i}">${num(i+1)}</h2><div class="group-weapons">${cards.slice(i*4,i*4+4).join('')}</div></section>`).join('');
+    $('catalogue').innerHTML = randomSeed === null ? cards.join('') : Array.from({length:Math.ceil(cards.length/4)}, (_, i) => `<section class="random-group" aria-labelledby="random-group-${i}" id="team-${i+1}"><div class="group-heading"><h2 class="group-number" id="random-group-${i}">${num(i+1)}</h2><button type="button" class="copy-team" data-team="${i+1}" aria-live="polite">${esc(copyLabels[groups[language]][0])}</button></div><div class="group-weapons">${cards.slice(i*4,i*4+4).join('')}</div></section>`).join('');
+  }
+  async function copyTeam(button) {
+    const labels = copyLabels[groups[language]];
+    const team = Number(button.dataset.team);
+    const names = Array.from(button.closest('.random-group').querySelectorAll('.card-name'), el => el.textContent);
+    const url = new URL(location.protocol === 'file:' ? 'https://amenorica.github.io/splatoon3-weapon-browser/' : location.href);
+    url.hash = new URLSearchParams({rand:randomSeed, lang:language, team:String(team)}).toString();
+    const text = [labels[3].replace('{n}',num(team)), ...names.map((name,i) => `${i+1}.${name}`), url.href].join('\n');
+    button.disabled = true;
+    try {
+      try {
+        if (!navigator.clipboard?.writeText) throw new Error('Clipboard API unavailable');
+        await navigator.clipboard.writeText(text);
+      } catch {
+        const input = document.createElement('textarea');
+        input.value = text; input.className = 'clipboard-input';
+        document.body.append(input); input.select();
+        try { if (!document.execCommand('copy')) throw new Error('Copy failed'); }
+        finally { input.remove(); button.focus({preventScroll:true}); }
+      }
+      button.textContent = labels[1];
+    } catch { button.textContent = labels[2]; }
+    finally { button.disabled = false; }
+    setTimeout(() => { if (button.isConnected) button.textContent = labels[0]; }, 1800);
   }
   function setRandom(seed) {
+    randomTeam = null;
     randomSeed = seed;
     randomOption.hidden = seed === null;
     $('random').setAttribute('aria-pressed', String(seed !== null));
@@ -222,9 +262,12 @@
     $('sort').value = ['default','name','sp','rank'].includes(params.get('sort')) ? params.get('sort') : 'default';
     setRandom(params.get('rand') || null);
     renderList();
+    const team = Number(params.get('team'));
+    if (randomSeed !== null && Number.isInteger(team) && team > 0 && $(`team-${team}`)) randomTeam = team;
     const key = params.get('weapon');
     if (byKey.has(key)) openWeapon(key, false);
     else if ($('detail').open) $('detail').close();
+    if (randomTeam !== null && !byKey.has(key)) $(`team-${randomTeam}`).scrollIntoView({block:'start'});
   }
   $('language').replaceChildren(...Object.entries(data.languages).map(([code,l]) => new Option(l.label,code)));
   $('language').addEventListener('change', () => {
@@ -242,6 +285,8 @@
   });
   ['type','sort'].forEach(id => $(id).addEventListener('change', () => {setRandom(null); renderList(); writeURL();}));
   $('catalogue').addEventListener('click', e => {
+    const copy = e.target.closest('.copy-team');
+    if (copy) { copyTeam(copy); return; }
     const button = e.target.closest('[data-weapon]'); if (button) openWeapon(button.dataset.weapon);
   });
   $('close').addEventListener('click', () => $('detail').close());

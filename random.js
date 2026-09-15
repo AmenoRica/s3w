@@ -17,6 +17,6 @@ window.WEAPON_RANDOM = {
     return result;
   },
   newSeed() {
-    return Array.from(crypto.getRandomValues(new Uint32Array(2)), n => n.toString(16).padStart(8, '0')).join('');
+    return crypto.getRandomValues(new Uint16Array(1))[0].toString(16).padStart(4, '0');
   }
 };
