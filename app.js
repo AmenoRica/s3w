@@ -21,7 +21,7 @@
   let randomSeed = null;
   let randomTeam = null;
   const copyLabels = {
-    ko:['복사하기','복사됨','다시 시도','{n}번째 랜덤 무기 팀'],
+    ko:['복사','복사됨','다시 시도','{n}번째 랜덤 무기 팀'],
     en:['Copy','Copied','Retry','Random weapon team {n}'],
     ja:['コピー','コピー済み','再試行','ランダムブキチーム {n}'],
     de:['Kopieren','Kopiert','Erneut','Zufälliges Waffenteam {n}'],
