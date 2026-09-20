@@ -3,6 +3,8 @@ import {inverseMatrix,transform,sphereTriangles} from './range-math.js';
 // Same v11.3.0 data revision as data.js. Distances are native map units.
 export const utilitySource='https://github.com/Leanny/splat3/tree/7280ff9cde8bb1c5dcef46c700c326471584d2e6/data/parameter/1130/weapon';
 export const utilityMarkers=[
+ // Approximate flat-ground reach: six practice lines (five native units each).
+ {key:'SpUltraShot',type:'special',shape:'sphere',radius:30,rangeOnly:true,source:'https://wikiwiki.jp/splatoon3mix/ブキ/スペシャルウェポン/ウルトラショット'},
  {key:'Bomb_Quick',type:'sub',shape:'blast',radius:4,innerRadius:2.8,damage:[35,25],field:'WeaponBombQuick.BlastParam.DistanceDamage'},
  {key:'SpPogo',type:'special',shape:'pogo',radius:9.6,innerRadius:6.4,damage:[220,60],fistDistance:6.54,directional:true,field:'WeaponSpPogo.BlastParamNormal / BulletParam.MoveDistance'},
  {key:'SpBlower',type:'special',shape:'vacuum',length:15,nearRadius:.8,farRadius:3.3,height:1.65,directional:true,field:'WeaponSpBlower.InhaleParam.LengthMax / RadiusMin / RadiusMax'},

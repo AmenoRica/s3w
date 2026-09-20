@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {existsSync} from 'node:fs';
 import {flatRangeLift,utilityMarkers,utilityByKey,utilityIcon,utilityTriangles,directionAngle,directionPoint,createDirectionDrag} from '../stages/utility-markers.js';
 import {createRangeRenderer} from '../stages/range-renderer.js';
-assert.equal(utilityMarkers.length,25);assert.equal(utilityByKey.size,25);
+assert.equal(utilityMarkers.length,26);assert.equal(utilityByKey.size,26);
 const item={position:[2,3,4],angle:0};
 for(const marker of utilityMarkers){
  assert.ok(existsSync(new URL(utilityIcon(marker),new URL('../stages/utility-markers.js',import.meta.url))));
@@ -37,4 +37,4 @@ renderer.update([screen],ranges,weapons,blocked);renderer.draw(top,[0,1,0]);cons
 screen.angle=Math.PI/2;renderer.update([screen],ranges,weapons,blocked);renderer.draw(top,[0,1,0]);assert.notDeepEqual(uploaded,before);
 assert.ok(Math.abs(directionPoint(screen,utilityByKey.get(screen.key))[2])<1e-9);
 renderer.update(utilityMarkers.map(m=>({key:m.key,...item})),ranges,weapons,blocked);renderer.draw(top,[0,1,0]);assert.ok(uploaded.length>0);
-console.log('PASS: 25 icons, sphere/cylinder dimensions, trap detection/blast radii, plane picking, direction commit/cancel/keyboard, rotation cache and all utility shapes without gun occlusion.');
+console.log('PASS: 26 icons, sphere/cylinder dimensions, trap detection/blast radii, plane picking, direction commit/cancel/keyboard, rotation cache and all utility shapes without gun occlusion.');

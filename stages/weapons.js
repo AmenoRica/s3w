@@ -1,11 +1,11 @@
-import {encodeMarkers,decodeMarkers} from './marker-share.js?v=20260920-specials-v2';
+import {encodeMarkers,decodeMarkers} from './marker-share.js?v=20260920-ultrashot';
 import {t,localizedText} from './i18n.js?v=20260919-l10n-2';
 import {validateRanges,transform,inverseMatrix} from './range-math.js';
 import {markerOccluded,markerScale} from './marker-visibility.js';
-import {createRangeRenderer} from './range-renderer.js?v=20260920-specials-v2';
+import {createRangeRenderer} from './range-renderer.js?v=20260920-ultrashot';
 import {createRangeOcclusion} from './range-occlusion.js?v=20260919-range-brightness-v3';
-import {utilityMarkers,utilityByKey,utilityForPlacement,utilityIcon,directionPoint,directionAngle,createDirectionDrag,markerPosition,reefStart,hasRoute,routeDistance,fitCurlingStart} from './utility-markers.js?v=20260920-live-url';
-import {createMarkerSettings} from './marker-settings.js?v=20260920-specials-v2';
+import {utilityMarkers,utilityByKey,utilityForPlacement,utilityIcon,directionPoint,directionAngle,createDirectionDrag,markerPosition,reefStart,hasRoute,routeDistance,fitCurlingStart} from './utility-markers.js?v=20260920-ultrashot';
+import {createMarkerSettings} from './marker-settings.js?v=20260920-ultrashot';
 // A drag previews valid terrain positions, committing only a valid drop.
 export function createWeaponDrag({canvas,pick,changed,selected=()=>{},outside=()=>false,removed=()=>{},committed=()=>{},constrain=(_item,point)=>point}){
  let drag=null;
@@ -107,7 +107,7 @@ export function createWeaponPlacement(root,{pick,schedule,onChange=()=>{}}){
  const handleLabel=key=>t(hasRoute(utilityByKey.get(key))?'출발점을 드래그해서 레일 조정':'방향 손잡이를 드래그해서 회전');
  const tooltip=(key,item)=>{
   const marker=utilityForPlacement(item||{key}),lines=n=>t('{n}칸',{n:window.SITE_I18N.number(n/5)});
-  if(marker)return [name(key),...(marker.sensorRadius?[`${t('청록')} · ${t('감지 반지름')}: ${lines(marker.sensorRadius)}`,`${t('파랑')} · ${t('폭발 반지름')}: ${lines(marker.radius)}`]:marker.radius?[`${t('범위 반지름')}: ${lines(marker.radius)}`]:[]),...(marker.shape==='curling'?[t('차지 시간 ≈ {n}초 (평지 추정)',{n:window.SITE_I18N.number(Math.round(marker.chargeFrames/60*100)/100)})]:[]),...(marker.shape==='fizzy'?[t('최대 차지 · 3연속 폭발'),marker.blastRadii.map(lines).join(' → ')]:[]),...(marker.innerRadius?[`${t('보라')} · ${marker.damage[0]}: ${lines(marker.innerRadius)}`,`${t('파랑')} · ${marker.damage[1]}: ${lines(marker.radius)}`]:[]),...(marker.shape==='pogo'?[t('본체·양쪽 주먹 배치 (평지 근사)')]:[]),...(marker.shape==='vacuum'?[`${t('흡입 거리')}: ${lines(marker.length)}`]:[]),...(marker.shotRange?[`${t('파랑')} · ${t('탄 도달 거리')}: ${lines(marker.shotRange)}`,t('수평 최대 거리 착탄 예시')]:[]),...(marker.rapidRange?[`${t('청록')} · ${t('연사 사거리')}: ${lines(marker.rapidRange)}`]:[]),...(marker.lethalRadius?[`${t('보라')} · 220: ${lines(marker.lethalRadius)}`,`${t('파랑')} · 70: ${lines(marker.radius)}`]:[]),...(marker.travel?[`${t('이동 거리')} ≈ ${lines(marker.travel)}`]:[]),...(marker.shape==='plane'?[`${t('평면 근사')}: ${lines(marker.width)} × ${lines(marker.height)}`]:[]),...(marker.shape==='cylinder'?[`${t('높이')}: ${lines(marker.height)} · ${t('1발')}`]:[]),...(marker.directional?[handleLabel(key)]:[])].join('\n');
+  if(marker)return [name(key),...(marker.sensorRadius?[`${t('청록')} · ${t('감지 반지름')}: ${lines(marker.sensorRadius)}`,`${t('파랑')} · ${t('폭발 반지름')}: ${lines(marker.radius)}`]:marker.radius?[`${t(marker.rangeOnly?'사거리':'범위 반지름')}: ${lines(marker.radius)}`]:[]),...(marker.shape==='curling'?[t('차지 시간 ≈ {n}초 (평지 추정)',{n:window.SITE_I18N.number(Math.round(marker.chargeFrames/60*100)/100)})]:[]),...(marker.shape==='fizzy'?[t('최대 차지 · 3연속 폭발'),marker.blastRadii.map(lines).join(' → ')]:[]),...(marker.innerRadius?[`${t('보라')} · ${marker.damage[0]}: ${lines(marker.innerRadius)}`,`${t('파랑')} · ${marker.damage[1]}: ${lines(marker.radius)}`]:[]),...(marker.shape==='pogo'?[t('본체·양쪽 주먹 배치 (평지 근사)')]:[]),...(marker.shape==='vacuum'?[`${t('흡입 거리')}: ${lines(marker.length)}`]:[]),...(marker.shotRange?[`${t('파랑')} · ${t('탄 도달 거리')}: ${lines(marker.shotRange)}`,t('수평 최대 거리 착탄 예시')]:[]),...(marker.rapidRange?[`${t('청록')} · ${t('연사 사거리')}: ${lines(marker.rapidRange)}`]:[]),...(marker.lethalRadius?[`${t('보라')} · 220: ${lines(marker.lethalRadius)}`,`${t('파랑')} · 70: ${lines(marker.radius)}`]:[]),...(marker.travel?[`${t('이동 거리')} ≈ ${lines(marker.travel)}`]:[]),...(marker.shape==='plane'?[`${t('평면 근사')}: ${lines(marker.width)} × ${lines(marker.height)}`]:[]),...(marker.shape==='cylinder'?[`${t('높이')}: ${lines(marker.height)} · ${t('1발')}`]:[]),...(marker.directional?[handleLabel(key)]:[])].join('\n');
   return [name(key),...ranges.actors[weapons.get(key).actor].map((range,i)=>`${t(i?'보라':'청록')} · ${t(range.label)}: ${t('{n}칸',{n:window.SITE_I18N.number(range.lines)})}`)].join('\n');
  };
  const committed=()=>{if(ready&&!restoring&&pendingShare===null)onChange()};

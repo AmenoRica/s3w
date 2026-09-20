@@ -2,7 +2,7 @@ import {t,localizedText} from './i18n.js?v=20260919-l10n-2';
 'use strict';
 import {terrainEdges} from './edges.js';
 import {createObjectives} from './objectives.js?v=20260919-l10n-2';
-import {createWeaponPlacement} from './weapons.js?v=20260920-live-url';
+import {createWeaponPlacement} from './weapons.js?v=20260920-ultrashot';
 import {pickTerrain} from './range-math.js';
 export function createMapViewer(root,{onChange=()=>{}}={}){
 const canvas=root.querySelector('#map'),status=root.querySelector('#status');

@@ -1,5 +1,5 @@
 import {t} from './i18n.js?v=20260919-l10n-2';
-import {utilityByKey,normalizeGearAP} from './utility-markers.js?v=20260920-live-url';
+import {utilityByKey,normalizeGearAP} from './utility-markers.js?v=20260920-ultrashot';
 
 export function createMarkerSettings(container,{name,describe,changed,remove}){
  const popup=document.createElement('section');popup.className='marker-settings';popup.hidden=true;popup.setAttribute('role','dialog');popup.setAttribute('aria-labelledby','marker-settings-title');

@@ -1,5 +1,5 @@
 import {sphereTriangles} from './range-math.js';
-import {utilityForPlacement,utilityTriangles,normalizeGearAP} from './utility-markers.js?v=20260920-live-url';
+import {utilityForPlacement,utilityTriangles,normalizeGearAP} from './utility-markers.js?v=20260920-ultrashot';
 // Approximate humanoid Inkling height (1.65 m); not weapon-specific muzzle data.
 const sightHeight=1.65;
 export const rangeColors=['#54e1bd','#bb9aff'];

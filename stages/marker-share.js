@@ -1,4 +1,4 @@
-import {utilityByKey,hasRoute,curlingLimits,routeDistance} from './utility-markers.js?v=20260920-live-url';
+import {utilityByKey,hasRoute,curlingLimits,routeDistance} from './utility-markers.js?v=20260920-ultrashot';
 const fail=()=>{throw Error('Invalid marker link')},limit=150000,tau=Math.PI*2;
 const base64=bytes=>btoa(Array.from(bytes,b=>String.fromCharCode(b)).join('')).replaceAll('+','-').replaceAll('/','_').replace(/=+$/,'');
 function validate(items,known,tolerance=.001){

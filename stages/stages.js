@@ -1,5 +1,5 @@
 import {t} from './i18n.js?v=20260919-l10n-2';
-import {createMapViewer} from './viewer.js?v=20260920-live-url';
+import {createMapViewer} from './viewer.js?v=20260920-ultrashot';
 import {decodeGeometry} from './geometry.js';
 const $=id=>document.getElementById(id);
 const kinds={versus:'대전',coop:'연어런',bigrun:'빅 런'};
