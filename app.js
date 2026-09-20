@@ -8,7 +8,12 @@
   if (!data || !ui) {
     $('count').textContent = '';
     $('error').hidden = false;
-    $('error').querySelector('p').textContent = '데이터를 읽지 못했습니다. data.js, ui.js 파일이 있는지 확인하고 다시 열어 주세요. / Data unavailable. Check the files and reload.';
+    const locale = navigator.language || 'ko';
+    const group = locale.startsWith('zh') ? (/TW|HK|Hant/i.test(locale) ? 'zh-Hant' : 'zh-Hans') : locale.split('-')[0];
+    const labels = ui?.[group] || ui?.en;
+    document.documentElement.lang = labels ? group : 'en';
+    $('error').querySelector('p').textContent = labels?.error || 'Data could not be loaded. Please reload.';
+    $('retry').textContent = labels?.retry || 'Reload';
     return;
   }
   const esc = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -57,7 +62,9 @@
     randomOption.textContent = randomLabels[groups[language]];
     formatter = new Intl.NumberFormat(pack.locale, {maximumFractionDigits:3});
     document.documentElement.lang = pack.locale;
-    document.title = '스플래툰 3 무기 데이터베이스';
+    window.SITE_I18N.setLanguage(language);
+    document.title = window.SITE_I18N.t('스플래툰 3 무기 데이터베이스');
+    document.querySelector('meta[name=description]').content = `${document.title} · ${t.performance} · ${t.explanation}`;
     $('catalogue').setAttribute('aria-label', t.title);
     document.querySelectorAll('[data-ui]').forEach(el => { el.textContent = t[el.dataset.ui]; });
     $('language').value = language;
@@ -180,7 +187,8 @@
         target.append(status);
         window.WEAPON_GUIDES.load(kind, retry).then(rows => {
           if (!target.isConnected) return;
-          const matches = rows.filter(row => row.weapon === names[kind]);
+          const matches = rows.filter(row => row.weapon === names[kind]
+            || (kind === 'main' && row.weapon === data.languages.KRko.types[w.type]));
           target.replaceChildren();
           if (!matches.length) {
             status.textContent = labels.guidesEmpty; target.append(status); return;

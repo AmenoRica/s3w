@@ -1,0 +1,452 @@
+{
+  "formatVersion": 1,
+  "sourceVersion": "10.1.0",
+  "checkedAt": "2026-09-19",
+  "sourceUrl": "https://wikiwiki.jp/splatoon3mix/ブキ/ブキ性能#weapon_range",
+  "unitSourceUrl": "https://wikiwiki.jp/splatoon3mix/システム詳細仕様",
+  "worldUnitsPerLine": 5,
+  "actors": {
+    "WeaponShooterShort": [
+      {
+        "label": "유효 사거리",
+        "lines": 1.7
+      }
+    ],
+    "WeaponShooterFirst": [
+      {
+        "label": "유효 사거리",
+        "lines": 2.3
+      }
+    ],
+    "WeaponShooterPrecision": [
+      {
+        "label": "유효 사거리",
+        "lines": 2.5
+      }
+    ],
+    "WeaponShooterBlaze": [
+      {
+        "label": "유효 사거리",
+        "lines": 2.3
+      }
+    ],
+    "WeaponShooterNormal": [
+      {
+        "label": "유효 사거리",
+        "lines": 2.6
+      }
+    ],
+    "WeaponShooterGravity": [
+      {
+        "label": "유효 사거리",
+        "lines": 2.7
+      }
+    ],
+    "WeaponShooterQuickMiddle": [
+      {
+        "label": "유효 사거리",
+        "lines": 2.5
+      }
+    ],
+    "WeaponShooterExpert": [
+      {
+        "label": "유효 사거리",
+        "lines": 3.5
+      }
+    ],
+    "WeaponShooterHeavy": [
+      {
+        "label": "유효 사거리",
+        "lines": 3.6
+      }
+    ],
+    "WeaponShooterLong": [
+      {
+        "label": "유효 사거리",
+        "lines": 4.6
+      }
+    ],
+    "WeaponShooterQuickLong": [
+      {
+        "label": "유효 사거리",
+        "lines": 3.3
+      }
+    ],
+    "WeaponBlasterShort": [
+      {
+        "label": "폭발 포함",
+        "lines": 2.3
+      }
+    ],
+    "WeaponBlasterMiddle": [
+      {
+        "label": "폭발 포함",
+        "lines": 2.7
+      }
+    ],
+    "WeaponBlasterLong": [
+      {
+        "label": "폭발 포함",
+        "lines": 3.4
+      }
+    ],
+    "WeaponBlasterLightShort": [
+      {
+        "label": "폭발 포함",
+        "lines": 2.6
+      }
+    ],
+    "WeaponBlasterLight": [
+      {
+        "label": "폭발 포함",
+        "lines": 3.7
+      }
+    ],
+    "WeaponBlasterLightLong": [
+      {
+        "label": "폭발 포함",
+        "lines": 4.2
+      }
+    ],
+    "WeaponBlasterPrecision": [
+      {
+        "label": "점프 사격 · 폭발 포함",
+        "lines": 2.4
+      },
+      {
+        "label": "지상 사격 · 폭발 포함",
+        "lines": 3.3
+      }
+    ],
+    "WeaponShooterTripleQuick": [
+      {
+        "label": "유효 사거리",
+        "lines": 3.0
+      }
+    ],
+    "WeaponShooterTripleMiddle": [
+      {
+        "label": "유효 사거리",
+        "lines": 3.5
+      }
+    ],
+    "WeaponShooterFlash": [
+      {
+        "label": "연속 사격",
+        "lines": 2.5
+      },
+      {
+        "label": "첫 발",
+        "lines": 3.8
+      }
+    ],
+    "WeaponRollerCompact": [
+      {
+        "label": "가로 휘두르기",
+        "lines": 1.6
+      },
+      {
+        "label": "세로 휘두르기",
+        "lines": 2.7
+      }
+    ],
+    "WeaponRollerNormal": [
+      {
+        "label": "가로 휘두르기",
+        "lines": 2.4
+      },
+      {
+        "label": "세로 휘두르기",
+        "lines": 3.2
+      }
+    ],
+    "WeaponRollerHeavy": [
+      {
+        "label": "가로 휘두르기",
+        "lines": 3.6
+      },
+      {
+        "label": "세로 휘두르기",
+        "lines": 4.8
+      }
+    ],
+    "WeaponRollerHunter": [
+      {
+        "label": "가로 휘두르기",
+        "lines": 2.0
+      },
+      {
+        "label": "세로 휘두르기",
+        "lines": 4.1
+      }
+    ],
+    "WeaponRollerWide": [
+      {
+        "label": "가로 휘두르기",
+        "lines": 2.4
+      },
+      {
+        "label": "세로 휘두르기",
+        "lines": 3.9
+      }
+    ],
+    "WeaponBrushMini": [
+      {
+        "label": "유효 사거리",
+        "lines": 1.5
+      }
+    ],
+    "WeaponBrushNormal": [
+      {
+        "label": "유효 사거리",
+        "lines": 1.9
+      }
+    ],
+    "WeaponBrushHeavy": [
+      {
+        "label": "유효 사거리",
+        "lines": 2.5
+      }
+    ],
+    "WeaponChargerQuick": [
+      {
+        "label": "풀차지",
+        "lines": 3.8
+      }
+    ],
+    "WeaponChargerNormal": [
+      {
+        "label": "풀차지",
+        "lines": 5.2
+      }
+    ],
+    "WeaponChargerNormalScope": [
+      {
+        "label": "풀차지",
+        "lines": 5.7
+      }
+    ],
+    "WeaponChargerLong": [
+      {
+        "label": "풀차지",
+        "lines": 6.2
+      }
+    ],
+    "WeaponChargerLongScope": [
+      {
+        "label": "풀차지",
+        "lines": 6.7
+      }
+    ],
+    "WeaponChargerLight": [
+      {
+        "label": "풀차지",
+        "lines": 4.3
+      }
+    ],
+    "WeaponChargerKeeper": [
+      {
+        "label": "풀차지",
+        "lines": 4.35
+      }
+    ],
+    "WeaponChargerPencil": [
+      {
+        "label": "풀차지",
+        "lines": 5.75
+      }
+    ],
+    "WeaponSlosherStrong": [
+      {
+        "label": "유효 사거리",
+        "lines": 3.1
+      }
+    ],
+    "WeaponSlosherDiffusion": [
+      {
+        "label": "유효 사거리",
+        "lines": 2.4
+      }
+    ],
+    "WeaponSlosherLauncher": [
+      {
+        "label": "소용돌이 포함",
+        "lines": 3.3
+      }
+    ],
+    "WeaponSlosherBathtub": [
+      {
+        "label": "유효 사거리",
+        "lines": 5.4
+      }
+    ],
+    "WeaponSlosherWashtub": [
+      {
+        "label": "폭발 포함",
+        "lines": 4.7
+      }
+    ],
+    "WeaponSlosherDouble": [
+      {
+        "label": "유효 사거리",
+        "lines": 3.3
+      }
+    ],
+    "WeaponSpinnerQuick": [
+      {
+        "label": "풀차지",
+        "lines": 3.0
+      }
+    ],
+    "WeaponSpinnerStandard": [
+      {
+        "label": "풀차지",
+        "lines": 4.2
+      }
+    ],
+    "WeaponSpinnerHyper": [
+      {
+        "label": "풀차지",
+        "lines": 5.0
+      }
+    ],
+    "WeaponSpinnerDownpour": [
+      {
+        "label": "단거리 모드",
+        "lines": 2.3
+      },
+      {
+        "label": "장거리 모드",
+        "lines": 4.7
+      }
+    ],
+    "WeaponSpinnerSerein": [
+      {
+        "label": "풀차지",
+        "lines": 3.6
+      }
+    ],
+    "WeaponSpinnerHyperShort": [
+      {
+        "label": "풀차지",
+        "lines": 3.5
+      }
+    ],
+    "WeaponManeuverShort": [
+      {
+        "label": "유효 사거리",
+        "lines": 2.0
+      }
+    ],
+    "WeaponManeuverNormal": [
+      {
+        "label": "유효 사거리",
+        "lines": 2.5
+      }
+    ],
+    "WeaponManeuverGallon": [
+      {
+        "label": "슬라이드 전",
+        "lines": 3.0
+      },
+      {
+        "label": "슬라이드 후",
+        "lines": 3.4
+      }
+    ],
+    "WeaponManeuverDual": [
+      {
+        "label": "유효 사거리",
+        "lines": 3.4
+      }
+    ],
+    "WeaponManeuverStepper": [
+      {
+        "label": "유효 사거리",
+        "lines": 2.8
+      }
+    ],
+    "WeaponManeuverLong": [
+      {
+        "label": "슬라이드 후",
+        "lines": 3.0
+      },
+      {
+        "label": "슬라이드 전",
+        "lines": 4.1
+      }
+    ],
+    "WeaponShelterNormal": [
+      {
+        "label": "대미지 도달",
+        "lines": 2.5
+      }
+    ],
+    "WeaponShelterWide": [
+      {
+        "label": "대미지 도달",
+        "lines": 3.1
+      }
+    ],
+    "WeaponShelterCompact": [
+      {
+        "label": "대미지 도달",
+        "lines": 2.6
+      }
+    ],
+    "WeaponShelterFocus": [
+      {
+        "label": "대미지 도달",
+        "lines": 3.0
+      }
+    ],
+    "WeaponStringerNormal": [
+      {
+        "label": "풀차지 · 폭발 포함",
+        "lines": 5.8
+      }
+    ],
+    "WeaponStringerShort": [
+      {
+        "label": "풀차지",
+        "lines": 3.6
+      }
+    ],
+    "WeaponStringerExplosion": [
+      {
+        "label": "풀차지 · 폭발 포함",
+        "lines": 5.3
+      }
+    ],
+    "WeaponSaberNormal": [
+      {
+        "label": "가로 베기 · 잉크",
+        "lines": 3.8
+      },
+      {
+        "label": "차지 베기 · 잉크",
+        "lines": 4.5
+      }
+    ],
+    "WeaponSaberLite": [
+      {
+        "label": "가로 베기 · 잉크",
+        "lines": 3.0
+      },
+      {
+        "label": "차지 베기 · 잉크",
+        "lines": 3.7
+      }
+    ],
+    "WeaponSaberHeavy": [
+      {
+        "label": "가로 베기 · 잉크",
+        "lines": 3.1
+      },
+      {
+        "label": "차지 베기 · 잉크",
+        "lines": 3.3
+      }
+    ]
+  }
+}

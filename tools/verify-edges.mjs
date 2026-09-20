@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {terrainEdges} from '../stages/edges.js';
+const tri=(a,b,c,category=1)=>[a,b,c].flatMap(p=>[...p,0,1,0,category]);
+const plane=[...tri([0,0,0],[1,0,0],[1,0,1]),...tri([0,0,0],[1,0,1],[0,0,1])];
+assert.equal(terrainEdges(new Float32Array(plane)).length/14,4);
+const folded=[...tri([0,0,0],[1,0,0],[0,0,1]),...tri([0,0,0],[0,1,0],[1,0,0])];
+assert.equal(terrainEdges(new Float32Array(folded)).length/14,5);
+assert.equal(terrainEdges(new Float32Array(tri([0,0,0],[1,0,0],[0,1,0],3))).length,0);
+console.log('PASS: flat diagonals removed, folded edges retained, ink rails excluded.');
+const split=[...tri([0,0,0],[2,0,0],[2,0,2]),...tri([0,0,0],[1,0,1],[0,0,2]),...tri([1,0,1],[2,0,2],[0,0,2])];
+assert.equal(terrainEdges(new Float32Array(split)).length/14,4);
+console.log('PASS: a flat diagonal split at a T-junction is not outlined.');

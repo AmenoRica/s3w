@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
+const source=readFileSync(new URL('../stages/stages.js',import.meta.url),'utf8');
+let jobs=[],writes=0,errors=0;
+const location={hash:'#stage=map&mode=Pnt'},context=vm.createContext({location,URLSearchParams,active:'map',viewer:{snapshot:()=>new Promise((resolve,reject)=>jobs.push({resolve,reject}))},history:{state:null,replaceState(_a,_b,hash){writes++;location.hash=hash}},window:{SITE_I18N:{text(){errors++}}},$:()=>({})});
+vm.runInContext("let acceptedHash=location.hash,acceptedMode='Pnt',urlRevision=0;"+source.slice(source.indexOf('async function writePlacementURL()'),source.indexOf('function route()')),context);
+const save=()=>vm.runInContext('writePlacementURL()',context);
+const first=save(),second=save();jobs[1].resolve('new');await second;jobs[0].resolve('old');await first;
+assert.equal(new URLSearchParams(location.hash.slice(1)).get('markers'),'new');assert.equal(writes,1);
+assert.equal(vm.runInContext('acceptedHash',context),location.hash);
+const navigating=save();location.hash='#stage=other';jobs[2].resolve('stale');await navigating;assert.equal(location.hash,'#stage=other');
+location.hash='#stage=map';const failed=save();jobs[3].reject(Error('encoding failed'));await failed;assert.equal(errors,1);assert.equal(location.hash,'#stage=map');
+const invalidated=save();vm.runInContext('urlRevision++',context);jobs[4].resolve('stale');await invalidated;assert.equal(writes,1);
+console.log('PASS: latest edit wins, accepted URL tracks saves, navigation invalidates snapshots, and encoding failure preserves URL.');

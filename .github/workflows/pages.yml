@@ -1,0 +1,52 @@
+name: GitHub Pages
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - name: Verify runtime behavior
+        shell: bash
+        run: |
+          set -e
+          for test in tools/verify-*.mjs; do
+            case "$test" in
+              tools/verify-minimaps.mjs|tools/verify-pages.mjs) continue ;;
+            esac
+            node "$test"
+          done
+      - name: Assemble and verify publishable files
+        run: |
+          python3 tools/build-pages.py
+          node tools/verify-pages.mjs
+      - uses: actions/upload-pages-artifact@v4
+        if: github.event_name != 'pull_request'
+        with:
+          path: _site
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
+      - uses: actions/deploy-pages@v4
+        id: deployment
