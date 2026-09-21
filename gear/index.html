@@ -8,9 +8,10 @@
   <link rel="stylesheet" href="style.css?v=20260921-beacon-jump">
   <script src="../data.js" defer></script>
   <script src="../ui.js" defer></script>
-  <script src="../localization.js" defer></script>
-  <script type="module" src="app.js?v=20260921-shift-copy"></script>
-<link rel="stylesheet" href="../site-header.css">
+  <script src="../localization.js?v=20260921-longpress" defer></script>
+  <script type="module" src="app.js?v=20260921-longpress"></script>
+<link rel="stylesheet" href="../site-header.css?v=20260921-longpress">
+<script src="../share-copy.js?v=20260921-longpress" defer></script>
 </head>
 <body>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><filter id="icon-ink" color-interpolation-filters="sRGB"><feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0 1" result="opaque"/><feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -1 -1 -1 0 1" result="mask"/><feFlood style="flood-color:var(--color-paper)"/><feComposite in2="mask" operator="in" result="ink"/><feComposite in="opaque" in2="ink" operator="arithmetic" k2="1" k3="1"/><feComposite in2="SourceAlpha" operator="in"/></filter></defs></svg>
@@ -27,7 +28,7 @@
           <div id="weapon-summary"></div>
         </section>
         <section class="selection-panel gear-selection"><div class="section-heading"><h2 data-l10n="기어 조합">기어 조합</h2><button id="reset" type="button" class="text-button" data-l10n="기어 초기화">기어 초기화</button></div><div id="gear-slots"></div>
-          <div class="share-actions"><button id="export-image" type="button" data-l10n="이미지로 내보내기">이미지로 내보내기</button><button id="copy-link" type="button" data-l10n="링크 복사">링크 복사</button></div><p id="share-status" class="small-note" role="status"></p>
+          <div class="share-actions"><button id="export-image" type="button" data-l10n="이미지로 내보내기">이미지로 내보내기</button><button id="copy-link" type="button" data-l10n="링크 복사">링크 복사</button></div><p class="copy-hint" data-l10n="길게 누르면 GitHub 링크 복사">길게 누르면 GitHub 링크 복사</p><p id="share-status" class="small-note" role="status"></p>
 
         </section>
 

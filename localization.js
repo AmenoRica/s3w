@@ -1,6 +1,7 @@
 /* Shared interface messages; game data and source labels remain unchanged. */
 (()=>{
 const messages={
+"길게 누르면 GitHub 링크 복사":{"ko": "길게 누르면 GitHub 링크 복사", "en": "Press and hold to copy the GitHub link", "ja": "長押しでGitHubリンクをコピー", "de": "Gedrückt halten, um den GitHub-Link zu kopieren", "es": "Mantén pulsado para copiar el enlace de GitHub", "fr": "Appuyez longuement pour copier le lien GitHub", "it": "Tieni premuto per copiare il link GitHub", "nl": "Houd ingedrukt om de GitHub-link te kopiëren", "ru": "Удерживайте, чтобы скопировать ссылку GitHub", "zh-Hans": "长按复制 GitHub 链接", "zh-Hant": "長按複製 GitHub 連結"},
 "스텔스 점프 페널티 시작":{"ko": "스텔스 점프 페널티 시작", "en": "Stealth Jump penalty starts", "ja": "ステルスジャンプのペナルティ開始", "de": "Sprunginfiltrations-Malus beginnt", "es": "Inicio de penalización de Supersalto invisible", "fr": "Début de pénalité de Réception réussie", "it": "Inizio penalità di Salto al buio", "nl": "Begin straf voor Sluipsprong", "ru": "Начало штрафа «Десанта»", "zh-Hans": "隐身跳跃惩罚开始", "zh-Hant": "隱身跳躍懲罰開始"},
 "스텔스 점프 페널티 최대":{"ko": "스텔스 점프 페널티 최대", "en": "Maximum Stealth Jump penalty", "ja": "ステルスジャンプのペナルティ最大", "de": "Maximaler Sprunginfiltrations-Malus", "es": "Penalización máxima de Supersalto invisible", "fr": "Pénalité maximale de Réception réussie", "it": "Penalità massima di Salto al buio", "nl": "Maximale straf voor Sluipsprong", "ru": "Максимальный штраф «Десанта»", "zh-Hans": "隐身跳跃惩罚最大", "zh-Hant": "隱身跳躍懲罰最大"},
 

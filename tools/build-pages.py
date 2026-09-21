@@ -7,7 +7,7 @@ import shutil
 
 root = Path(__file__).resolve().parents[1]
 out = root / '_site'
-files = set('index.html style.css site-header.css tokens.css data.js ui.js guides.js random.js localization.js app.js sources.json .nojekyll'.split())
+files = set('index.html style.css site-header.css tokens.css data.js ui.js guides.js random.js localization.js share-copy.js app.js sources.json .nojekyll'.split())
 stage_files = '''index.html stages.css stages.js viewer.js geometry.js edges.js i18n.js
 objectives.js weapons.js range-math.js range-occlusion.js range-renderer.js
 marker-share.js marker-settings.js marker-visibility.js utility-markers.js
