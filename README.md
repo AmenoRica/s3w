@@ -105,14 +105,16 @@ npm run deploy
 
 ## GitHub Pages 배포
 
-`.github/workflows/pages.yml`이 `main` 푸시 또는 수동 실행 시 검증 → 배포 파일 조립 → GitHub Pages 배포를 수행합니다. PR에서는 검증과 조립까지만 실행합니다. 저장소 Pages의 Source는 **GitHub Actions**를 사용합니다.
+`.github/workflows/pages.yml`이 `main` 푸시 또는 수동 실행 시 검증 후 GitHub Pages에 리다이렉트 페이지를 배포합니다. `https://amenorica.github.io/s3w/` 및 하위 경로는 `https://ameno.cc/s3w/`의 같은 경로로 이동하며 검색 조건과 해시를 유지합니다. 루트·스테이지·기어 진입점과 404 페이지에 같은 리다이렉트를 사용합니다. JavaScript가 꺼진 환경에는 새 사이트 링크를 표시합니다. PR에서는 검증과 조립까지만 실행합니다. 저장소 Pages의 Source는 **GitHub Actions**를 사용합니다.
+
+실제 앱은 Cloudflare Workers에 배포합니다. 아래 `_site/` 조립과 검증은 Worker용 런타임 파일에도 사용하며, GitHub Pages에는 `_redirect/`만 업로드합니다.
 
 ```sh
 python3 tools/build-pages.py
 node tools/verify-pages.mjs
 ```
 
-배포에는 `_site/`만 사용합니다. 런타임 코드, 무기 이미지·글꼴, 스테이지 썸네일과 manifest가 참조하는 지형만 포함합니다. 기존 렌더러의 대체 지형도 유지합니다. `outputs/`, `map-demo/`, `planner-demo/`, `tools/`, 문서와 Git 메타데이터는 포함하지 않습니다. 원본 폴더와 실험 결과는 삭제하지 않습니다.
+앱 런타임 묶음 `_site/`에는 런타임 코드, 무기 이미지·글꼴, 스테이지 썸네일과 manifest가 참조하는 지형만 포함합니다. 기존 렌더러의 대체 지형도 유지합니다. `outputs/`, `map-demo/`, `planner-demo/`, `tools/`, 문서와 Git 메타데이터는 포함하지 않습니다. 원본 폴더와 실험 결과는 삭제하지 않습니다.
 
 현재 배포 묶음은 약 157 MB입니다. JS·CSS·JSON 참조는 콘텐츠 기반의 공통 릴리스 식별자로 갱신합니다. GitHub Pages 프로젝트 하위 경로에서도 동작하도록 상대 경로를 유지합니다. 압축 지형은 일반 `.bin.gz` 파일로 제공하며 별도 `Content-Encoding` 설정을 추가하지 않습니다.
 

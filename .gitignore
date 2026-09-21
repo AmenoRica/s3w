@@ -337,4 +337,5 @@ planner-demo/
 /node_modules/
 /.wrangler/
 /_worker-assets/
+/_redirect/
 /worker/generated/

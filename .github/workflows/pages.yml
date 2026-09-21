@@ -32,10 +32,17 @@ jobs:
         run: |
           python3 tools/build-pages.py
           node tools/verify-pages.mjs
+      - name: Assemble GitHub Pages redirect
+        run: |
+          mkdir -p _redirect/stages _redirect/gear
+          cp pages-redirect/index.html _redirect/index.html
+          cp pages-redirect/index.html _redirect/404.html
+          cp pages-redirect/index.html _redirect/stages/index.html
+          cp pages-redirect/index.html _redirect/gear/index.html
       - uses: actions/upload-pages-artifact@v4
         if: github.event_name != 'pull_request'
         with:
-          path: _site
+          path: _redirect
   deploy:
     if: github.event_name != 'pull_request'
     needs: build
