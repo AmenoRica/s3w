@@ -7,12 +7,14 @@ import shutil
 
 root = Path(__file__).resolve().parents[1]
 out = root / '_site'
-files = set('index.html style.css tokens.css data.js ui.js guides.js random.js localization.js app.js sources.json .nojekyll'.split())
+files = set('index.html style.css site-header.css tokens.css data.js ui.js guides.js random.js localization.js app.js sources.json .nojekyll'.split())
 stage_files = '''index.html stages.css stages.js viewer.js geometry.js edges.js i18n.js
 objectives.js weapons.js range-math.js range-occlusion.js range-renderer.js
 marker-share.js marker-settings.js marker-visibility.js utility-markers.js
-data.json minimaps.json objectives.json weapon-ranges.json'''.split()
+data.json minimaps.json objectives.json respawns.json stealth-jump.js weapon-ranges.json'''.split()
 files.update('stages/' + name for name in stage_files)
+files.update('gear/' + name for name in ['index.html', 'style.css', 'app.js', 'core.js', 'ink-test.js', 'respawn-jump.js', 'export-image.js', 'share.js', 'i18n.js', 'messages.json', 'gear-names.json', 'data.json'])
+files.update(str(p.relative_to(root)) for p in (root / 'gear/icons').glob('*.png'))
 files.update(str(p.relative_to(root)) for p in (root / 'assets').rglob('*') if p.is_file() and not p.name.startswith('.'))
 data = json.loads((root / 'stages/data.json').read_text())
 minimaps = json.loads((root / 'stages/minimaps.json').read_text())

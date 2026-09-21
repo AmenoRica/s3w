@@ -1,0 +1,16 @@
+{
+  "name": "s3w",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:worker": "python3 tools/build-pages.py && node tools/build-worker.mjs",
+    "dev:worker": "npm run build:worker && wrangler dev",
+    "deploy": "npm run build:worker && wrangler deploy"
+  },
+  "dependencies": {
+    "@resvg/resvg-wasm": "2.6.2"
+  },
+  "devDependencies": {
+    "wrangler": "4.135.0"
+  }
+}

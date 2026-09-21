@@ -223,7 +223,7 @@
       const signature = s.label + ':' + s.value;
       if (!uniqueStats.has(signature)) uniqueStats.set(signature, s);
     });
-    $('detail-body').innerHTML = `<div class="weapon-heading"><h2 id="weapon-title">${esc(pack.names[w.key])}</h2><p class="id">${esc(w.key)} · #${w.id}</p></div>
+    $('detail-body').innerHTML = `<div class="weapon-heading"><h2 id="weapon-title">${esc(pack.names[w.key])}</h2><p class="id">${esc(w.key)} · #${w.id}</p><a class="gear-editor-link" href="gear/?${esc(new URLSearchParams({weapon:w.key, lang:language}).toString())}">${esc(window.SITE_I18N.t('기어 편집기에서 보기'))}</a></div>
       <div class="detail-main"><section class="weapon-spec" aria-label="${esc(t.performance)}">
         <div class="detail-picture"><img src="${asset('Path_Wst_',w.key)}" width="300" height="300" alt="${esc(pack.names[w.key])}"></div>
         <div class="kit"><span class="kit-icon"><img src="${asset('Wsb_',w.sub+'00')}" width="36" height="36" alt=""></span><div><small>${esc(t.sub)}</small><strong>${esc(pack.sub[w.sub])}</strong></div></div>

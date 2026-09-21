@@ -334,3 +334,7 @@ planner-demo/
 /stages/minimap-geometry/feb732fa994a44a87f5a.bin.gz
 /stages/minimap-geometry/ff0487627855f7426087.bin.gz
 /verification.json
+/node_modules/
+/.wrangler/
+/_worker-assets/
+/worker/generated/

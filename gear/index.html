@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f3ed">
+  <title data-l10n="눈으로 보는 기어 파워 · 스플래툰 3">눈으로 보는 기어 파워 · 스플래툰 3</title>
+  <link rel="stylesheet" href="style.css?v=20260921-test-buttons">
+  <script src="../data.js" defer></script>
+  <script src="../ui.js" defer></script>
+  <script src="../localization.js" defer></script>
+  <script type="module" src="app.js?v=20260921-export-totals-shift"></script>
+<link rel="stylesheet" href="../site-header.css">
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><filter id="icon-ink" color-interpolation-filters="sRGB"><feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0 1" result="opaque"/><feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -1 -1 -1 0 1" result="mask"/><feFlood style="flood-color:var(--color-paper)"/><feComposite in2="mask" operator="in" result="ink"/><feComposite in="opaque" in2="ink" operator="arithmetic" k2="1" k3="1"/><feComposite in2="SourceAlpha" operator="in"/></filter></defs></svg>
+  <header class="masthead"><a class="brand" href="../" aria-label="무기" data-l10n-aria-label="무기">W.</a><nav class="site-tabs" aria-label="카탈로그" data-l10n-aria-label="카탈로그"><a href="../" data-l10n="무기">무기</a><a href="../stages/" data-l10n="스테이지">스테이지</a><a href="../gear/" aria-current="page" data-l10n="기어 계산기">기어 계산기</a></nav><label class="language-control"><select disabled id="language" aria-label="언어" data-l10n-aria-label="언어"><option value="KRko" data-l10n="한국어">한국어</option></select></label></header>
+  <main>
+    <div class="intro"><div><p class="eyebrow">SPLATOON 3 · VER. 11.3.0</p><h1 data-l10n="눈으로 보는 기어 파워">눈으로 보는 기어 파워</h1></div></div>
+    <p id="load-status" role="status" data-l10n="계산 데이터를 불러오는 중…">계산 데이터를 불러오는 중…</p>
+    <div id="error" class="error" role="alert" hidden></div>
+    <div id="workspace" class="workspace" hidden>
+      <aside class="selection-area" aria-label="무기와 기어 선택" data-l10n-aria-label="무기와 기어 선택">
+        <section class="selection-panel weapon-selection"><div class="section-heading"><h2 data-l10n="무기 선택">무기 선택</h2></div>
+          <label class="search-label" for="weapon-search" data-l10n="이름 검색">이름 검색</label><input id="weapon-search" type="search" placeholder="무기 · 서브 · 스페셜" data-l10n-placeholder="무기 · 서브 · 스페셜" autocomplete="off">
+          <label class="sr-only" for="weapon" data-l10n="메인 무기">메인 무기</label><select id="weapon"></select><p id="search-status" class="small-note" role="status"></p>
+          <div id="weapon-summary"></div>
+        </section>
+        <section class="selection-panel gear-selection"><div class="section-heading"><h2 data-l10n="기어 조합">기어 조합</h2><button id="reset" type="button" class="text-button" data-l10n="기어 초기화">기어 초기화</button></div><div id="gear-slots"></div>
+          <div class="share-actions"><button id="export-image" type="button" data-l10n="이미지로 내보내기">이미지로 내보내기</button><button id="copy-link" type="button" data-l10n="링크 복사">링크 복사</button></div><p id="share-status" class="small-note" role="status"></p>
+
+        </section>
+
+        <section class="selection-panel palette-panel">
+          <div class="palette-discard" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7"/></svg><strong class="discard-ready" data-l10n="여기로 끌어 놓으면 기어가 제거됩니다">여기로 끌어 놓으면 기어가 제거됩니다</strong><strong class="discard-hover" data-l10n="놓아서 기어 제거">놓아서 기어 제거</strong></div>
+          <div class="palette-heading"><h3 data-l10n="기어 팔레트">기어 팔레트</h3></div>
+          <p class="small-note"><span data-l10n="아이콘을 원 안으로 끌어 넣으세요.">아이콘을 원 안으로 끌어 넣으세요.</span><br><span data-l10n="아이콘을 누른 뒤 슬롯을 눌러도 장착할 수 있습니다.">아이콘을 누른 뒤 슬롯을 눌러도 장착할 수 있습니다.</span></p>
+          <div id="gear-palette" aria-label="기어 팔레트" data-l10n-aria-label="기어 팔레트"></div><p id="palette-status" class="palette-status" role="status"></p>
+        </section>
+        <section class="selection-panel condition-selection"><div class="section-heading"><h2 data-l10n="발동 조건">발동 조건</h2><span>＋</span></div><div id="conditions"></div><div class="cooler-row"><label class="toggle-label"><span><strong data-l10n="에너지 스탠드">에너지 스탠드</strong><small data-l10n="드링크 효과를 받은 상태">드링크 효과를 받은 상태</small></span><input id="cooler" type="checkbox" role="switch"></label></div></section>
+        <details class="ap-panel"><summary><span data-l10n="적용된 기어 파워">적용된 기어 파워</span> <span id="ap-count"></span></summary><div id="ability-points"></div></details>
+      </aside>
+      <div class="results"><div class="results-heading"><p class="eyebrow" data-l10n="계산 결과">계산 결과</p></div><p id="reference-note" class="notice" hidden></p><div id="result-cards"></div>
+        <details class="method"><summary data-l10n="계산 기준과 출처">계산 기준과 출처</summary><div>
+          <p data-l10n="11.3.0 데이터 기준입니다. 무기와 기어 슬롯은 링크에 저장됩니다. 발동 조건은 저장하지 않습니다. 미확인 값은 추정하지 않고, 해당 동작이 없으면 ‘해당 없음’으로 표시합니다.">11.3.0 데이터 기준입니다. 무기와 기어 슬롯은 링크에 저장됩니다. 발동 조건은 저장하지 않습니다. 미확인 값은 추정하지 않고, 해당 동작이 없으면 ‘해당 없음’으로 표시합니다.</p>
+          <p data-l10n="공격 횟수는 잉크 회복 없이 정상 소비량을 온전히 지불하는 횟수입니다. 잉크 부족 시 약화 공격, 연사 중 회복, 설치물 동시 유지 한도는 제외합니다. 새싹 계열은 110% 탱크를 반영합니다.">공격 횟수는 잉크 회복 없이 정상 소비량을 온전히 지불하는 횟수입니다. 잉크 부족 시 약화 공격, 연사 중 회복, 설치물 동시 유지 한도는 제외합니다. 새싹 계열은 110% 탱크를 반영합니다.</p>
+          <p data-l10n="이동은 가속·감속을 제외한 정상 지면의 최고 속도입니다. 연습장 1칸 = 내부 거리 5단위, 1초 = 60프레임으로 환산합니다. 사망 손실은 직전 보유 SP 기준이며 적 기어 효과는 포함하지 않습니다.">이동은 가속·감속을 제외한 정상 지면의 최고 속도입니다. 연습장 1칸 = 내부 거리 5단위, 1초 = 60프레임으로 환산합니다. 사망 손실은 직전 보유 SP 기준이며 적 기어 효과는 포함하지 않습니다.</p>
+          <p data-l10n="최대 투척 거리는 평지·정지 상태에서 첫 착지까지 가장 멀리 도달하는 각도를 찾은 근사치입니다. 구르기·바운드·추적은 제외합니다. 점프 그림은 시간을 비교하기 위한 그림이며 실제 비행 경로를 재현하지 않습니다. 스텔스 점프는 선택한 거리의 12~20칸 구간에서 추가 시간이 0~1초로 비례한다고 가정합니다.">최대 투척 거리는 평지·정지 상태에서 첫 착지까지 가장 멀리 도달하는 각도를 찾은 근사치입니다. 구르기·바운드·추적은 제외합니다. 점프 그림은 시간을 비교하기 위한 그림이며 실제 비행 경로를 재현하지 않습니다. 스텔스 점프는 선택한 거리의 12~20칸 구간에서 추가 시간이 0~1초로 비례한다고 가정합니다.</p>
+          <p data-l10n="잉크 회복은 잠복 중에 회복이 시작된 순간부터의 시간입니다. 공격 직후의 회복 대기는 제외합니다. 두 탱크는 동시에 시작하고, 가득 찬 뒤 다음 비교를 위해 다시 비워집니다.">잉크 회복은 잠복 중에 회복이 시작된 순간부터의 시간입니다. 공격 직후의 회복 대기는 제외합니다. 두 탱크는 동시에 시작하고, 가득 찬 뒤 다음 비교를 위해 다시 비워집니다.</p>
+          <p data-l10n="선택은 모든 기어를 지원하지만, 이번 결과 범위에 없는 적 잉크 피해·마킹·대물 피해 등은 계산 결과에 표시하지 않습니다.">선택은 모든 기어를 지원하지만, 이번 결과 범위에 없는 적 잉크 피해·마킹·대물 피해 등은 계산 결과에 표시하지 않습니다.</p>
+          <ul id="source-links"></ul>
+        </div></details>
+      </div>
+    </div>
+    <noscript data-l10n="계산기를 사용하려면 JavaScript를 켜 주세요.">계산기를 사용하려면 JavaScript를 켜 주세요.</noscript>
+  </main>
+  <footer><span data-l10n="비공식 팬 페이지">비공식 팬 페이지</span><span data-l10n="게임 이미지·명칭 © Nintendo">게임 이미지·명칭 © Nintendo</span></footer>
+</body>
+</html>

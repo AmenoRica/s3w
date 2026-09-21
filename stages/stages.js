@@ -1,11 +1,11 @@
 import {t} from './i18n.js?v=20260919-l10n-2';
-import {createMapViewer} from './viewer.js?v=20260920-ultrashot';
+import {createMapViewer} from './viewer.js?v=20260921-stealth-v3';
 import {decodeGeometry} from './geometry.js';
 const $=id=>document.getElementById(id);
 const kinds={versus:'대전',coop:'연어런',bigrun:'빅 런'};
 const modes={Pnt:'영역 배틀',Var:'랭크 에어리어',Vlf:'랭크 타워',Vgl:'랭크 피시 배틀',Vcl:'랭크 바지락',Low:'간조',Mid:'일반',High:'만조'};
 const languageLabels={KRko:'한국어',JPja:'日本語',USen:'English (US)',EUen:'English (Europe)',EUde:'Deutsch',EUes:'Español (España)',USes:'Español (América)',EUfr:'Français (Europe)',USfr:'Français (Canada)',EUit:'Italiano',EUnl:'Nederlands',EUru:'Русский',CNzh:'简体中文',TWzh:'繁體中文'};
-let data,minimaps,objectives,viewer,active=null,revision=0,controller,commonKey='',commonData=null,listScroll=0,language=Object.keys(window.SITE_I18N.groups).find(code=>window.SITE_I18N.groups[code]===(navigator.language.startsWith('zh')?(/TW|HK|Hant/i.test(navigator.language)?'zh-Hant':'zh-Hans'):navigator.language.split('-')[0]))||'KRko';
+let data,minimaps,objectives,respawns,viewer,active=null,revision=0,controller,commonKey='',commonData=null,listScroll=0,language=Object.keys(window.SITE_I18N.groups).find(code=>window.SITE_I18N.groups[code]===(navigator.language.startsWith('zh')?(/TW|HK|Hant/i.test(navigator.language)?'zh-Hant':'zh-Hans'):navigator.language.split('-')[0]))||'KRko';
 try{language=localStorage.getItem('ink-armory-language')||language}catch{}
 if(!languageLabels[language])language='KRko';
 $('language').replaceChildren(...Object.entries(languageLabels).map(([code,label])=>new Option(label,code)));$('language').value=language;
@@ -53,6 +53,7 @@ async function load(stage,mode,reset,shared){
    meta.initialYaw=meta.boundsMax[0]-meta.boundsMin[0]>meta.boundsMax[2]-meta.boundsMin[2]?Math.PI/2:0;
   }
   meta.objectives=objectives.stages[stage.key]?.[mode];
+  meta.respawns=respawns.stages[stage.key]?.[mode];
   viewer.show(meta,combined,reset);
  }catch(error){if(current!==revision||error.name==='AbortError')return;viewer.error(error);$('map-retry').hidden=false;}
 }
@@ -89,7 +90,7 @@ function route(){
 $('language').onchange=()=>{language=$('language').value;window.SITE_I18N.setLanguage(language);try{localStorage.setItem('ink-armory-language',language)}catch{}if(data){list();if(active){const stage=data.stages.find(s=>s.key===active);heading(stage);$('mode-label').textContent=t(stage.kind==='versus'?'룰':'수위');for(const option of $('mode').options)option.textContent=t(modes[option.value]);}else document.title=`${t('스테이지')} · Splatoon 3`}};
 $('filters').onsubmit=e=>e.preventDefault();$('search').oninput=()=>data&&list();$('kind').onchange=$('sort').onchange=()=>data&&list();$('filters').onreset=()=>requestAnimationFrame(()=>data&&list());
 $('mode').onchange=()=>{const params=new URLSearchParams({stage:active,mode:$('mode').value});location.hash=params.toString()};$('map-retry').onclick=route;window.addEventListener('hashchange',route);
-try{[data,minimaps,objectives]=await Promise.all(['data.json','minimaps.json','objectives.json'].map(async file=>{const response=await fetch(file);if(!response.ok)throw Error('목록을 불러오지 못했습니다.');return response.json()}));list();route()}catch(error){$('count').textContent='';$('list-error').hidden=false;}
+try{[data,minimaps,objectives,respawns]=await Promise.all(['data.json','minimaps.json','objectives.json','respawns.json'].map(async file=>{const response=await fetch(file);if(!response.ok)throw Error('목록을 불러오지 못했습니다.');return response.json()}));list();route()}catch(error){$('count').textContent='';$('list-error').hidden=false;}
 
 $('marker-share').onclick=async()=>{
  const url=new URL(location.href);

@@ -1,0 +1,1559 @@
+{
+  "schemaVersion": 1,
+  "version": "1130",
+  "commit": "7280ff9cde8bb1c5dcef46c700c326471584d2e6",
+  "sources": {
+    "game": "https://raw.githubusercontent.com/Leanny/splat3/7280ff9cde8bb1c5dcef46c700c326471584d2e6/",
+    "curves": "data/parameter/1130/misc/params.json",
+    "player": "data/parameter/1130/misc/SplPlayer.game__GameParameterTable.json",
+    "abilities": "ability.html",
+    "supplement": "https://github.com/sendou-ink/sendou.ink/tree/7e95ae2eb3fd8ca8857372566c79e9937cb5e8f2/app/features/build-analyzer",
+    "units": "https://wikiwiki.jp/splatoon3mix/システム詳細仕様"
+  },
+  "defense": {
+    "Bomb_Curling": {
+      "blasts": [
+        {
+          "label": "최소 차지",
+          "source": "BlastParamMinCharge.DistanceDamage",
+          "rings": [
+            {
+              "radius": 1.6,
+              "damage": 180.0
+            },
+            {
+              "radius": 5.0,
+              "damage": 30.0
+            }
+          ]
+        },
+        {
+          "label": "최대 차지",
+          "source": "BlastParamMaxCharge.DistanceDamage",
+          "rings": [
+            {
+              "radius": 4.6,
+              "damage": 180.0
+            },
+            {
+              "radius": 8.0,
+              "damage": 30.0
+            }
+          ]
+        }
+      ],
+      "direct": 20.0,
+      "damageCurve": "DamageRt_BombH",
+      "mistLevels": [],
+      "mistSource": "",
+      "directSource": "MoveParam.DamageDirectHit"
+    },
+    "Bomb_Fizzy": {
+      "blasts": [
+        {
+          "label": "폭발 1",
+          "source": "MoveParam.BlastParamArray.0.DistanceDamage",
+          "rings": [
+            {
+              "radius": 1.6,
+              "damage": 50.0
+            },
+            {
+              "radius": 3.8,
+              "damage": 35.0
+            }
+          ]
+        },
+        {
+          "label": "폭발 2",
+          "source": "MoveParam.BlastParamArray.1.DistanceDamage",
+          "rings": [
+            {
+              "radius": 1.95,
+              "damage": 50.0
+            },
+            {
+              "radius": 4.5,
+              "damage": 35.0
+            }
+          ]
+        },
+        {
+          "label": "폭발 3",
+          "source": "MoveParam.BlastParamArray.2.DistanceDamage",
+          "rings": [
+            {
+              "radius": 2.6,
+              "damage": 50.0
+            },
+            {
+              "radius": 5.45,
+              "damage": 35.0
+            }
+          ]
+        }
+      ],
+      "direct": 0.0,
+      "damageCurve": "DamageRt_BombL",
+      "mistLevels": [],
+      "mistSource": "",
+      "directSource": ""
+    },
+    "Bomb_Quick": {
+      "blasts": [
+        {
+          "label": "폭발",
+          "source": "BlastParam.DistanceDamage",
+          "rings": [
+            {
+              "radius": 2.8,
+              "damage": 35.0
+            },
+            {
+              "radius": 4.0,
+              "damage": 25.0
+            }
+          ]
+        }
+      ],
+      "direct": 0.0,
+      "damageCurve": "DamageRt_BombL",
+      "mistLevels": [],
+      "mistSource": "",
+      "directSource": ""
+    },
+    "Bomb_Robot": {
+      "blasts": [
+        {
+          "label": "폭발",
+          "source": "BlastParam.DistanceDamage",
+          "rings": [
+            {
+              "radius": 2.85,
+              "damage": 180.0
+            },
+            {
+              "radius": 6.5,
+              "damage": 30.0
+            }
+          ]
+        }
+      ],
+      "direct": 0.0,
+      "damageCurve": "DamageRt_BombH",
+      "mistLevels": [],
+      "mistSource": "",
+      "directSource": ""
+    },
+    "Bomb_Splash": {
+      "blasts": [
+        {
+          "label": "폭발",
+          "source": "BlastParam.DistanceDamage",
+          "rings": [
+            {
+              "radius": 3.6,
+              "damage": 180.0
+            },
+            {
+              "radius": 7.0,
+              "damage": 30.0
+            }
+          ]
+        }
+      ],
+      "direct": 0.0,
+      "damageCurve": "DamageRt_BombH",
+      "mistLevels": [],
+      "mistSource": "",
+      "directSource": ""
+    },
+    "Bomb_Suction": {
+      "blasts": [
+        {
+          "label": "폭발",
+          "source": "BlastParam.DistanceDamage",
+          "rings": [
+            {
+              "radius": 4.6,
+              "damage": 180.0
+            },
+            {
+              "radius": 8.0,
+              "damage": 30.0
+            }
+          ]
+        }
+      ],
+      "direct": 0.0,
+      "damageCurve": "DamageRt_BombH",
+      "mistLevels": [],
+      "mistSource": "",
+      "directSource": ""
+    },
+    "Bomb_Torpedo": {
+      "blasts": [
+        {
+          "label": "본체 폭발",
+          "source": "BlastParamChase.DistanceDamage",
+          "rings": [
+            {
+              "radius": 2.6,
+              "damage": 60.0
+            },
+            {
+              "radius": 6.0,
+              "damage": 35.0
+            }
+          ]
+        },
+        {
+          "label": "작은 폭발",
+          "source": "BlastParamChase.SplashBlastParam.DistanceDamage",
+          "rings": [
+            {
+              "radius": 2.6,
+              "damage": 12.0
+            }
+          ]
+        }
+      ],
+      "direct": 0.0,
+      "damageCurve": "DamageRt_BombH",
+      "mistLevels": [],
+      "mistSource": "",
+      "directSource": ""
+    },
+    "LineMarker": {
+      "blasts": [],
+      "direct": 40.0,
+      "damageCurve": "DamageRt_LineMarker",
+      "mistLevels": [],
+      "mistSource": "",
+      "directSource": "MoveParam.DirectDamage"
+    },
+    "PointSensor": {
+      "blasts": [],
+      "direct": 0.0,
+      "damageCurve": "DamageRt_BombH",
+      "mistLevels": [],
+      "mistSource": "",
+      "directSource": ""
+    },
+    "PoisonMist": {
+      "blasts": [],
+      "direct": 0.0,
+      "damageCurve": "DamageRt_BombH",
+      "mistLevels": [
+        {
+          "startFrames": 0,
+          "human": 0.65,
+          "swim": 0.55
+        },
+        {
+          "startFrames": 78,
+          "human": 0.43,
+          "swim": 0.32
+        },
+        {
+          "startFrames": 156,
+          "human": 0.2,
+          "swim": 0.1
+        }
+      ],
+      "mistSource": "User-provided table, 2026-09-21; not verified engine parameters",
+      "directSource": ""
+    },
+    "Trap": {
+      "blasts": [
+        {
+          "label": "폭발",
+          "source": "BlastParam.DistanceDamage",
+          "rings": [
+            {
+              "radius": 3.6,
+              "damage": 45.0
+            },
+            {
+              "radius": 8.0,
+              "damage": 35.0
+            }
+          ]
+        }
+      ],
+      "direct": 0.0,
+      "damageCurve": "DamageRt_BombH",
+      "mistLevels": [],
+      "mistSource": "",
+      "directSource": ""
+    }
+  },
+  "curves": {
+    "ConsumeRt_Main": [
+      1.0,
+      0.775,
+      0.55
+    ],
+    "ConsumeRt_Sub_Lv0": [
+      1.0,
+      0.9,
+      0.8
+    ],
+    "ConsumeRt_Sub_Lv1": [
+      1.0,
+      0.85,
+      0.7
+    ],
+    "ConsumeRt_Sub_Lv2": [
+      1.0,
+      0.825,
+      0.65
+    ],
+    "ConsumeRt_Sub_Lv3": [
+      1.0,
+      0.8,
+      0.6
+    ],
+    "ConsumeRt_Sub_Lv4": [
+      1.0,
+      0.855555,
+      0.711111
+    ],
+    "IncreaseRt_Special": [
+      1.0,
+      1.15,
+      1.3
+    ],
+    "SpecialGaugeRt_Restart": [
+      0.5,
+      0.8,
+      1.0
+    ],
+    "MoveVelRt_Shot": [
+      1.0,
+      1.125,
+      1.25
+    ],
+    "MoveVel_Human": [
+      0.096,
+      0.12,
+      0.144
+    ],
+    "MoveVel_Human_Fast": [
+      0.104,
+      0.124,
+      0.144
+    ],
+    "MoveVel_Human_Slow": [
+      0.088,
+      0.116,
+      0.144
+    ],
+    "MoveVel_Stealth": [
+      0.192,
+      0.216,
+      0.24
+    ],
+    "MoveVel_Stealth_Fast": [
+      0.2016,
+      0.2208,
+      0.24
+    ],
+    "MoveVel_Stealth_Slow": [
+      0.1728,
+      0.216,
+      0.24
+    ],
+    "SuperJump_ChargeFrm": [
+      80.0,
+      35.0,
+      20.0
+    ],
+    "SuperJump_MoveFrm": [
+      138.0,
+      132.3,
+      96.6
+    ],
+    "ReduceJumpSwerveRate": [
+      0.0,
+      0.75,
+      1.0
+    ],
+    "InkRecoverFrm_Stealth": [
+      180.0,
+      148.5,
+      117.0
+    ],
+    "Dying_ChaseFrm": [
+      270.0,
+      180.0,
+      90.0
+    ],
+    "Dying_AroundFrm": [
+      90.0,
+      60.0,
+      30.0
+    ],
+    "OpInk_MoveVel": [
+      0.024,
+      0.0557,
+      0.0768
+    ],
+    "DamageRt_BombH": [
+      1.0,
+      0.75,
+      0.5
+    ],
+    "DamageRt_BombL": [
+      1.0,
+      0.75,
+      0.6
+    ],
+    "DamageRt_LineMarker": [
+      1.0,
+      0.75,
+      0.5
+    ],
+    "MarkingTimeRt": [
+      1.0,
+      0.43,
+      0.1
+    ],
+    "MarkingTimeRt_Trap": [
+      1.0,
+      0.55,
+      0.1
+    ],
+    "MoveDownRt_PoisonMist": [
+      1.0,
+      0.75,
+      0.5
+    ],
+    "WallJumpChargeFrm": [
+      45,
+      18,
+      5
+    ]
+  },
+  "gear": {
+    "Action_Up": {
+      "name": "액션 강화",
+      "slot": "None"
+    },
+    "ComeBack": {
+      "name": "컴백",
+      "slot": "Head"
+    },
+    "DeathMarking": {
+      "name": "리벤지",
+      "slot": "Clothes"
+    },
+    "EndAllUp": {
+      "name": "라스트 스퍼트",
+      "slot": "Head"
+    },
+    "ExSkillDouble": {
+      "name": "추가 기어 파워 2배",
+      "slot": "Clothes"
+    },
+    "Exorcist": {
+      "name": "부활 페널티 업",
+      "slot": "Clothes"
+    },
+    "HumanMove_Up": {
+      "name": "인간 이동 속도 업",
+      "slot": "None"
+    },
+    "InkRecovery_Up": {
+      "name": "잉크 회복력 업",
+      "slot": "None"
+    },
+    "JumpTime_Save": {
+      "name": "슈퍼 점프 시간 단축",
+      "slot": "None"
+    },
+    "MainInk_Save": {
+      "name": "잉크 효율 업(메인)",
+      "slot": "None"
+    },
+    "MinorityUp": {
+      "name": "역경 강화",
+      "slot": "Head"
+    },
+    "None": {
+      "name": "",
+      "slot": "None"
+    },
+    "ObjectEffect_Up": {
+      "name": "오브젝트 공격력 업",
+      "slot": "Shoes"
+    },
+    "OpInkEffect_Reduction": {
+      "name": "상대 잉크 영향 감소",
+      "slot": "None"
+    },
+    "RespawnSpecialGauge_Save": {
+      "name": "스페셜 감소량 다운",
+      "slot": "None"
+    },
+    "RespawnTime_Save": {
+      "name": "부활 시간 단축",
+      "slot": "None"
+    },
+    "SomersaultLanding": {
+      "name": "낙법",
+      "slot": "Shoes"
+    },
+    "SpecialIncrease_Up": {
+      "name": "스페셜 증가량 업",
+      "slot": "None"
+    },
+    "SpecialSpec_Up": {
+      "name": "스페셜 성능 업",
+      "slot": "None"
+    },
+    "SquidMoveSpatter_Reduction": {
+      "name": "징어닌자",
+      "slot": "Clothes"
+    },
+    "SquidMove_Up": {
+      "name": "징어대시 속도 업",
+      "slot": "None"
+    },
+    "StartAllUp": {
+      "name": "스타트 대시",
+      "slot": "Head"
+    },
+    "SubEffect_Reduction": {
+      "name": "서브 영향 감소",
+      "slot": "None"
+    },
+    "SubInk_Save": {
+      "name": "잉크 효율 업(서브)",
+      "slot": "None"
+    },
+    "SubSpec_Up": {
+      "name": "서브 성능 업",
+      "slot": "None"
+    },
+    "SuperJumpSign_Hide": {
+      "name": "스텔스 점프",
+      "slot": "Shoes"
+    },
+    "ThermalInk": {
+      "name": "서멀 잉크",
+      "slot": "Clothes"
+    }
+  },
+  "conditions": {
+    "StartAllUp": {
+      "add": {
+        "HumanMove_Up": 30,
+        "SquidMove_Up": 30,
+        "OpInkEffect_Reduction": 30,
+        "Action_Up": 30
+      }
+    },
+    "ComeBack": {
+      "add": {
+        "MainInk_Save": 10,
+        "SubInk_Save": 10,
+        "InkRecovery_Up": 10,
+        "HumanMove_Up": 10,
+        "SquidMove_Up": 10,
+        "SpecialIncrease_Up": 10
+      }
+    },
+    "SomersaultLanding": {
+      "add": {
+        "HumanMove_Up": 30,
+        "SquidMove_Up": 30,
+        "OpInkEffect_Reduction": 30
+      }
+    },
+    "EndAllUp": {
+      "maxBonus": 18,
+      "stages": 21,
+      "targets": [
+        "MainInk_Save",
+        "SubInk_Save",
+        "InkRecovery_Up"
+      ]
+    },
+    "Tacticooler": {
+      "minimum": {
+        "HumanMove_Up": 29,
+        "SquidMove_Up": 29,
+        "JumpTime_Save": 57,
+        "RespawnTime_Save": 57,
+        "RespawnSpecialGauge_Save": 57,
+        "Action_Up": 57,
+        "OpInkEffect_Reduction": 57
+      }
+    }
+  },
+  "defaults": {
+    "speedType": "Normal",
+    "subSaveLevel": 2,
+    "bombInkFraction": 0.7
+  },
+  "rules": {
+    "fps": 60,
+    "distancePerCell": 5,
+    "mainAP": 10,
+    "subAP": 3,
+    "maxAP": 57,
+    "largeTankRatio": 1.1,
+    "largeTankWeaponIds": [
+      10,
+      11
+    ],
+    "ninjaSpeedRatio": 0.9,
+    "respawnPunisherLoss": 0.225,
+    "respawnFixedFrames": 90,
+    "ownRespawnPenaltyFrames": 68,
+    "enemyRespawnPenaltyFrames": 45,
+    "enemyRespawnAPRate": 0.15,
+    "enemySpecialLoss": 0.15,
+    "stealthExtraMaxFrames": 60,
+    "beaconMidAP": 25.0,
+    "beaconMaxAP": 57.0,
+    "beaconMidInput": 17.8,
+    "tenacityRates": [
+      0,
+      3.26,
+      5.44,
+      7.59
+    ]
+  },
+  "subs": {
+    "Beacon": {
+      "source": "data/parameter/1130/weapon/WeaponBeacon.game__GameParameterTable.json",
+      "effects": [],
+      "inkFraction": 0.75,
+      "saveLevel": 3,
+      "throwModel": null
+    },
+    "Bomb_Curling": {
+      "source": "data/parameter/1130/weapon/WeaponBombCurling.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "MoveParam.SpawnSpeedZSpecUp",
+          "label": "투척 초기 속도",
+          "kind": "speed",
+          "curve": [
+            0.4,
+            0.46,
+            0.52
+          ],
+          "source": "MoveParam.SpawnSpeedZSpecUp"
+        }
+      ],
+      "inkFraction": 0.65,
+      "saveLevel": 2,
+      "throwModel": {
+        "mode": "slide",
+        "gravity": 0.016,
+        "drag": 0.05866,
+        "vertical": 0.12,
+        "flightFrames": 0
+      }
+    },
+    "Bomb_Fizzy": {
+      "source": "data/parameter/1130/weapon/WeaponBombFizzy.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "MoveParam.SpawnSpeedZSpecUp",
+          "label": "투척 초기 속도",
+          "kind": "speed",
+          "curve": [
+            1.36,
+            1.6,
+            1.84
+          ],
+          "source": "MoveParam.SpawnSpeedZSpecUp"
+        }
+      ],
+      "inkFraction": 0.6,
+      "saveLevel": 1,
+      "throwModel": {
+        "mode": "arc",
+        "gravity": 0.016,
+        "drag": 0.05866,
+        "vertical": 0.24,
+        "flightFrames": 0
+      }
+    },
+    "Bomb_Quick": {
+      "source": "data/parameter/1130/weapon/WeaponBombQuick.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "MoveParam.SpawnSpeedZSpecUp",
+          "label": "투척 초기 속도",
+          "kind": "speed",
+          "curve": [
+            1.12,
+            1.4,
+            1.68
+          ],
+          "source": "MoveParam.SpawnSpeedZSpecUp"
+        }
+      ],
+      "inkFraction": 0.45,
+      "saveLevel": 4,
+      "throwModel": {
+        "mode": "arc",
+        "gravity": 0.016,
+        "drag": 0.05866,
+        "vertical": 0.24,
+        "flightFrames": 0
+      }
+    },
+    "Bomb_Robot": {
+      "source": "data/parameter/1130/weapon/WeaponBombRobot.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "MoveParam.SpawnSpeedZSpecUp",
+          "label": "투척 초기 속도",
+          "kind": "speed",
+          "curve": [
+            1.12,
+            1.4,
+            1.68
+          ],
+          "source": "MoveParam.SpawnSpeedZSpecUp"
+        }
+      ],
+      "inkFraction": 0.55,
+      "saveLevel": 1,
+      "throwModel": {
+        "mode": "arc",
+        "gravity": 0.016,
+        "drag": 0.05866,
+        "vertical": 0.24,
+        "flightFrames": 0
+      }
+    },
+    "Bomb_Splash": {
+      "source": "data/parameter/1130/weapon/WeaponBombSplash.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "MoveParam.SpawnSpeedZSpecUp",
+          "label": "투척 초기 속도",
+          "kind": "speed",
+          "curve": [
+            1.12,
+            1.4,
+            1.68
+          ],
+          "source": "MoveParam.SpawnSpeedZSpecUp"
+        }
+      ],
+      "inkFraction": 0.7,
+      "saveLevel": 2,
+      "throwModel": {
+        "mode": "arc",
+        "gravity": 0.016,
+        "drag": 0.05866,
+        "vertical": 0.24,
+        "flightFrames": 0
+      }
+    },
+    "Bomb_Suction": {
+      "source": "data/parameter/1130/weapon/WeaponBombSuction.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "MoveParam.SpawnSpeedZSpecUp",
+          "label": "투척 초기 속도",
+          "kind": "speed",
+          "curve": [
+            1.12,
+            1.4,
+            1.68
+          ],
+          "source": "MoveParam.SpawnSpeedZSpecUp"
+        }
+      ],
+      "inkFraction": 0.7,
+      "saveLevel": 2,
+      "throwModel": {
+        "mode": "arc",
+        "gravity": 0.016,
+        "drag": 0.05866,
+        "vertical": 0.24,
+        "flightFrames": 0
+      }
+    },
+    "Bomb_Torpedo": {
+      "source": "data/parameter/1130/weapon/WeaponBombTorpedo.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "MoveParam.SpawnSpeedZSpecUp",
+          "label": "투척 초기 속도",
+          "kind": "speed",
+          "curve": [
+            1.4,
+            1.65,
+            1.9
+          ],
+          "source": "MoveParam.SpawnSpeedZSpecUp"
+        }
+      ],
+      "inkFraction": 0.65,
+      "saveLevel": 2,
+      "throwModel": {
+        "mode": "arc",
+        "gravity": 0.016,
+        "drag": 0.05866,
+        "vertical": 0.24,
+        "flightFrames": 0
+      }
+    },
+    "LineMarker": {
+      "source": "data/parameter/1130/weapon/WeaponLineMarker.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "MoveParam.MarkingFrame",
+          "label": "마킹 지속",
+          "kind": "frames",
+          "curve": [
+            300.0,
+            450.0,
+            600.0
+          ],
+          "source": "MoveParam.MarkingFrame"
+        },
+        {
+          "id": "MoveParam.SpawnSpeedZSpecUp",
+          "label": "투척 초기 속도",
+          "kind": "speed",
+          "curve": [
+            6.3,
+            6.55,
+            6.8
+          ],
+          "source": "MoveParam.SpawnSpeedZSpecUp"
+        }
+      ],
+      "inkFraction": 0.4,
+      "saveLevel": 0,
+      "throwModel": {
+        "mode": "line",
+        "gravity": 0.0,
+        "drag": 0.0,
+        "vertical": 0.24,
+        "flightFrames": 7
+      }
+    },
+    "PointSensor": {
+      "source": "data/parameter/1130/weapon/WeaponPointSensor.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "AreaParam.MarkingFrameSubSpec",
+          "label": "마킹 지속",
+          "kind": "frames",
+          "curve": [
+            480.0,
+            720.0,
+            960.0
+          ],
+          "source": "AreaParam.MarkingFrameSubSpec"
+        },
+        {
+          "id": "MoveParam.SpawnSpeedZSpecUp",
+          "label": "투척 초기 속도",
+          "kind": "speed",
+          "curve": [
+            1.38,
+            1.64,
+            1.87
+          ],
+          "source": "MoveParam.SpawnSpeedZSpecUp"
+        }
+      ],
+      "inkFraction": 0.45,
+      "saveLevel": 1,
+      "throwModel": {
+        "mode": "arc",
+        "gravity": 0.016,
+        "drag": 0.05866,
+        "vertical": 0.24,
+        "flightFrames": 0
+      }
+    },
+    "PoisonMist": {
+      "source": "data/parameter/1130/weapon/WeaponPoisonMist.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "MoveParam.SpawnSpeedZSpecUp",
+          "label": "투척 초기 속도",
+          "kind": "speed",
+          "curve": [
+            1.12,
+            1.4,
+            1.68
+          ],
+          "source": "MoveParam.SpawnSpeedZSpecUp"
+        }
+      ],
+      "inkFraction": 0.55,
+      "saveLevel": 1,
+      "throwModel": {
+        "mode": "arc",
+        "gravity": 0.016,
+        "drag": 0.05866,
+        "vertical": 0.24,
+        "flightFrames": 0
+      }
+    },
+    "Shield": {
+      "source": "data/parameter/1130/weapon/WeaponShield.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "MoveParam.MaxHP",
+          "label": "장치 내구도",
+          "kind": "hp",
+          "curve": [
+            8000.0,
+            11500.0,
+            15000.0
+          ],
+          "source": "MoveParam.MaxHP"
+        }
+      ],
+      "inkFraction": 0.6,
+      "saveLevel": 2,
+      "throwModel": null
+    },
+    "Sprinkler": {
+      "source": "data/parameter/1130/weapon/WeaponSprinkler.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "MoveParam.PeriodFirst",
+          "label": "강한 분사 지속",
+          "kind": "frames",
+          "curve": [
+            480.0,
+            630.0,
+            780.0
+          ],
+          "source": "MoveParam.PeriodFirst"
+        },
+        {
+          "id": "MoveParam.PeriodSecond",
+          "label": "중간 분사 지속",
+          "kind": "frames",
+          "curve": [
+            900.0,
+            960.0,
+            1020.0
+          ],
+          "source": "MoveParam.PeriodSecond"
+        }
+      ],
+      "inkFraction": 0.6,
+      "saveLevel": 3,
+      "throwModel": null
+    },
+    "Trap": {
+      "source": "data/parameter/1130/weapon/WeaponTrap.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "AreaParam.Distance",
+          "label": "마킹 범위 반지름",
+          "kind": "distance",
+          "curve": [
+            8.0,
+            9.5,
+            11.0
+          ],
+          "source": "AreaParam.Distance"
+        },
+        {
+          "id": "AreaParam.MarkingFrameSubSpec",
+          "label": "마킹 지속",
+          "kind": "frames",
+          "curve": [
+            300.0,
+            450.0,
+            600.0
+          ],
+          "source": "AreaParam.MarkingFrameSubSpec"
+        },
+        {
+          "id": "BlastParam.SubSpecialSpecUpList.0.Value",
+          "label": "폭발 피해 범위 배율",
+          "kind": "ratio",
+          "curve": [
+            1.0,
+            1.1875,
+            1.375
+          ],
+          "source": "BlastParam.SubSpecialSpecUpList.0.Value"
+        },
+        {
+          "id": "MoveParam.SensorRadius",
+          "label": "감지 반지름",
+          "kind": "distance",
+          "curve": [
+            3.0,
+            3.5,
+            4.0
+          ],
+          "source": "MoveParam.SensorRadius"
+        }
+      ],
+      "inkFraction": 0.6,
+      "saveLevel": 3,
+      "throwModel": null
+    }
+  },
+  "specials": {
+    "SpBlower": {
+      "source": "data/parameter/1130/weapon/WeaponSpBlower.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "InhaleParam.RadiusMax",
+          "label": "흡입 범위 · 바깥 반지름",
+          "kind": "distance",
+          "curve": [
+            3.3,
+            3.8,
+            4.3
+          ],
+          "source": "InhaleParam.RadiusMax"
+        },
+        {
+          "id": "InhaleParam.RadiusMin",
+          "label": "흡입 범위 · 안쪽 반지름",
+          "kind": "distance",
+          "curve": [
+            0.8,
+            1.1,
+            1.4
+          ],
+          "source": "InhaleParam.RadiusMin"
+        }
+      ]
+    },
+    "SpCastle": {
+      "source": "data/parameter/1130/weapon/WeaponSpCastle.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "WeaponParam.SpecialTotalFrame",
+          "label": "지속 시간",
+          "kind": "frames",
+          "curve": [
+            480.0,
+            540.0,
+            600.0
+          ],
+          "source": "WeaponParam.SpecialTotalFrame"
+        }
+      ]
+    },
+    "SpChariot": {
+      "source": "data/parameter/1130/weapon/WeaponSpChariot.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "WeaponSpChariotParam.SpecialTotalFrame",
+          "label": "지속 시간",
+          "kind": "frames",
+          "curve": [
+            480.0,
+            570.0,
+            660.0
+          ],
+          "source": "WeaponSpChariotParam.SpecialTotalFrame"
+        }
+      ]
+    },
+    "SpChimney": {
+      "source": "data/parameter/1130/weapon/WeaponSpChimney.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "MoveParam.SpawnSpeedZSpecUp",
+          "label": "투척 초기 속도",
+          "kind": "speed",
+          "curve": [
+            1.3,
+            1.5,
+            1.7
+          ],
+          "source": "MoveParam.SpawnSpeedZSpecUp"
+        },
+        {
+          "id": "WallParam.MoveSpeed",
+          "label": "전진 속도",
+          "kind": "speed",
+          "curve": [
+            0.04,
+            0.053,
+            0.06
+          ],
+          "source": "WallParam.MoveSpeed"
+        }
+      ]
+    },
+    "SpEnergyStand": {
+      "source": "data/parameter/1130/weapon/WeaponSpEnergyStand.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "FridgeParam.PowerUpFrame",
+          "label": "드링크 효과 지속",
+          "kind": "frames",
+          "curve": [
+            1020.0,
+            1290.0,
+            1500.0
+          ],
+          "source": "FridgeParam.PowerUpFrame"
+        }
+      ]
+    },
+    "SpFirework": {
+      "source": "data/parameter/1130/weapon/WeaponSpFirework.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "IceParam.BlastParam.SubSpecialSpecUpList.0.Value",
+          "label": "폭발 칠 반지름",
+          "kind": "distance",
+          "curve": [
+            3.5,
+            3.8,
+            4.1
+          ],
+          "source": "IceParam.BlastParam.SubSpecialSpecUpList.0.Value"
+        },
+        {
+          "id": "IceParam.BlastParam.SubSpecialSpecUpList.1.Value",
+          "label": "십자 칠 길이",
+          "kind": "distance",
+          "curve": [
+            2.5,
+            2.75,
+            3.0
+          ],
+          "source": "IceParam.BlastParam.SubSpecialSpecUpList.1.Value"
+        },
+        {
+          "id": "IceParam.BlastParam.SubSpecialSpecUpList.2.Value",
+          "label": "십자 칠 반지름",
+          "kind": "distance",
+          "curve": [
+            2.5,
+            2.75,
+            3.0
+          ],
+          "source": "IceParam.BlastParam.SubSpecialSpecUpList.2.Value"
+        },
+        {
+          "id": "IceParam.BlastParam.SubSpecialSpecUpList.3.Value",
+          "label": "폭발 피해 범위 배율",
+          "kind": "ratio",
+          "curve": [
+            1.0,
+            1.1,
+            1.2
+          ],
+          "source": "IceParam.BlastParam.SubSpecialSpecUpList.3.Value"
+        }
+      ]
+    },
+    "SpGreatBarrier": {
+      "source": "data/parameter/1130/weapon/WeaponSpGreatBarrier.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "spl__BulletSpGreatBarrierMoveParam.BarrierParam.MaxFieldHP",
+          "label": "배리어 내구도",
+          "kind": "hp",
+          "curve": [
+            30720.0,
+            33792.0,
+            36864.0
+          ],
+          "source": "spl__BulletSpGreatBarrierMoveParam.BarrierParam.MaxFieldHP"
+        },
+        {
+          "id": "spl__BulletSpGreatBarrierMoveParam.BarrierParam.MaxHP",
+          "label": "장치 내구도",
+          "kind": "hp",
+          "curve": [
+            15360.0,
+            16896.0,
+            18432.0
+          ],
+          "source": "spl__BulletSpGreatBarrierMoveParam.BarrierParam.MaxHP"
+        }
+      ]
+    },
+    "SpInkStorm": {
+      "source": "data/parameter/1130/weapon/WeaponSpInkStorm.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "CloudParam.RainyFrame",
+          "label": "비 지속 시간",
+          "kind": "frames",
+          "curve": [
+            480.0,
+            540.0,
+            600.0
+          ],
+          "source": "CloudParam.RainyFrame"
+        },
+        {
+          "id": "MoveParam.SpawnSpeedZSpecUp",
+          "label": "투척 초기 속도",
+          "kind": "speed",
+          "curve": [
+            1.12,
+            1.4,
+            1.68
+          ],
+          "source": "MoveParam.SpawnSpeedZSpecUp"
+        }
+      ]
+    },
+    "SpJetpack": {
+      "source": "data/parameter/1130/weapon/WeaponSpJetpack.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "BlastParam.SubSpecialSpecUpList.0.Value",
+          "label": "폭발 칠 반지름",
+          "kind": "distance",
+          "curve": [
+            3.2,
+            3.6,
+            4.0
+          ],
+          "source": "BlastParam.SubSpecialSpecUpList.0.Value"
+        },
+        {
+          "id": "BlastParam.SubSpecialSpecUpList.1.Value",
+          "label": "폭발 피해 범위 배율",
+          "kind": "ratio",
+          "curve": [
+            1.0,
+            1.15,
+            1.3
+          ],
+          "source": "BlastParam.SubSpecialSpecUpList.1.Value"
+        },
+        {
+          "id": "BlastParam.SubSpecialSpecUpList.2.Value",
+          "label": "주변 잉크 초기 속도 · 최소",
+          "kind": "speed",
+          "curve": [
+            0.49,
+            0.505,
+            0.52
+          ],
+          "source": "BlastParam.SubSpecialSpecUpList.2.Value"
+        },
+        {
+          "id": "BlastParam.SubSpecialSpecUpList.3.Value",
+          "label": "주변 잉크 초기 속도 · 최대",
+          "kind": "speed",
+          "curve": [
+            0.33,
+            0.34,
+            0.35
+          ],
+          "source": "BlastParam.SubSpecialSpecUpList.3.Value"
+        },
+        {
+          "id": "BlastParam.SubSpecialSpecUpList.4.Value",
+          "label": "주변 잉크 칠 반지름",
+          "kind": "distance",
+          "curve": [
+            0.63,
+            0.665,
+            0.7
+          ],
+          "source": "BlastParam.SubSpecialSpecUpList.4.Value"
+        },
+        {
+          "id": "WeaponParam.SpecialTotalFrame",
+          "label": "지속 시간",
+          "kind": "frames",
+          "curve": [
+            450.0,
+            480.0,
+            510.0
+          ],
+          "source": "WeaponParam.SpecialTotalFrame"
+        }
+      ]
+    },
+    "SpMicroLaser": {
+      "source": "data/parameter/1130/weapon/WeaponSpMicroLaser.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "spl__BulletSpMicroLaserBitParam.LaserParam.LaserFrame",
+          "label": "레이저 지속",
+          "kind": "frames",
+          "curve": [
+            180.0,
+            220.0,
+            240.0
+          ],
+          "source": "spl__BulletSpMicroLaserBitParam.LaserParam.LaserFrame"
+        }
+      ]
+    },
+    "SpMultiMissile": {
+      "source": "data/parameter/1130/weapon/WeaponSpMultiMissile.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "spl__BulletBlastParam.SubSpecialSpecUpList.0.Value",
+          "label": "폭발 칠 반지름",
+          "kind": "distance",
+          "curve": [
+            3.15,
+            3.465,
+            3.78
+          ],
+          "source": "spl__BulletBlastParam.SubSpecialSpecUpList.0.Value"
+        },
+        {
+          "id": "spl__WeaponSpMultiMissileLockOnParam.TargetInCircleRadius",
+          "label": "조준 원 반지름",
+          "kind": "screen",
+          "curve": [
+            140.0,
+            190.0,
+            240.0
+          ],
+          "source": "spl__WeaponSpMultiMissileLockOnParam.TargetInCircleRadius"
+        }
+      ]
+    },
+    "SpNiceBall": {
+      "source": "data/parameter/1130/weapon/WeaponSpNiceBall.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "WeaponParam.ChargeRateAutoPerFrame",
+          "label": "자동 충전 속도",
+          "kind": "charge",
+          "curve": [
+            0.002,
+            0.006,
+            0.01
+          ],
+          "source": "WeaponParam.ChargeRateAutoPerFrame"
+        }
+      ]
+    },
+    "SpPogo": {
+      "source": "data/parameter/1130/weapon/WeaponSpPogo.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "BlastParamDokanWarp.SubSpecialSpecUpList.0.Value",
+          "label": "폭발 피해 범위 배율",
+          "kind": "ratio",
+          "curve": [
+            1.0,
+            1.05,
+            1.1
+          ],
+          "source": "BlastParamDokanWarp.SubSpecialSpecUpList.0.Value"
+        },
+        {
+          "id": "BlastParamDokanWarp.SubSpecialSpecUpList.1.Value",
+          "label": "폭발 칠 반지름",
+          "kind": "distance",
+          "curve": [
+            10.0,
+            11.0,
+            12.0
+          ],
+          "source": "BlastParamDokanWarp.SubSpecialSpecUpList.1.Value"
+        }
+      ]
+    },
+    "SpShockSonar": {
+      "source": "data/parameter/1130/weapon/WeaponSpShockSonar.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "spl__BulletSpShockSonarParam.WaveParam.MaxFrame",
+          "label": "파동 지속",
+          "kind": "frames",
+          "curve": [
+            160.0,
+            192.0,
+            216.0
+          ],
+          "source": "spl__BulletSpShockSonarParam.WaveParam.MaxFrame"
+        },
+        {
+          "id": "spl__BulletSpShockSonarParam.WaveParam.MaxRadius",
+          "label": "파동 최대 반지름",
+          "kind": "distance",
+          "curve": [
+            20.0,
+            24.0,
+            27.0
+          ],
+          "source": "spl__BulletSpShockSonarParam.WaveParam.MaxRadius"
+        }
+      ]
+    },
+    "SpSkewer": {
+      "source": "data/parameter/1130/weapon/WeaponSpSkewer.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "BulletBlastParam.SubSpecialSpecUpList.0.Value",
+          "label": "폭발 피해 범위 배율",
+          "kind": "ratio",
+          "curve": [
+            1.0,
+            1.1,
+            1.2
+          ],
+          "source": "BulletBlastParam.SubSpecialSpecUpList.0.Value"
+        },
+        {
+          "id": "BulletBlastParam.SubSpecialSpecUpList.1.Value",
+          "label": "폭발 칠 반지름",
+          "kind": "distance",
+          "curve": [
+            7.51,
+            8.26,
+            9.012
+          ],
+          "source": "BulletBlastParam.SubSpecialSpecUpList.1.Value"
+        },
+        {
+          "id": "BulletBlastParam.SubSpecialSpecUpList.2.Value",
+          "label": "주변 잉크 초기 속도 · 최소",
+          "kind": "speed",
+          "curve": [
+            0.6,
+            0.65,
+            0.7
+          ],
+          "source": "BulletBlastParam.SubSpecialSpecUpList.2.Value"
+        },
+        {
+          "id": "BulletBlastParam.SubSpecialSpecUpList.3.Value",
+          "label": "주변 잉크 초기 속도 · 최대",
+          "kind": "speed",
+          "curve": [
+            0.7,
+            0.75,
+            0.8
+          ],
+          "source": "BulletBlastParam.SubSpecialSpecUpList.3.Value"
+        },
+        {
+          "id": "BulletBlastParam.SubSpecialSpecUpList.4.Value",
+          "label": "주변 잉크 칠 반지름",
+          "kind": "distance",
+          "curve": [
+            1.0,
+            1.1,
+            1.2
+          ],
+          "source": "BulletBlastParam.SubSpecialSpecUpList.4.Value"
+        }
+      ]
+    },
+    "SpSuperHook": {
+      "source": "data/parameter/1130/weapon/WeaponSpSuperHook.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "WeaponParam.InkConsume_Hook",
+          "label": "팔 뻗기 잉크 소비",
+          "kind": "percent",
+          "curve": [
+            0.04,
+            0.025,
+            0.015
+          ],
+          "source": "WeaponParam.InkConsume_Hook"
+        },
+        {
+          "id": "WeaponParam.InkConsume_PerSec",
+          "label": "초당 잉크 소비",
+          "kind": "percentPerSecond",
+          "curve": [
+            0.15,
+            0.1305,
+            0.12
+          ],
+          "source": "WeaponParam.InkConsume_PerSec"
+        }
+      ]
+    },
+    "SpTripleTornado": {
+      "source": "data/parameter/1130/weapon/WeaponSpTripleTornado.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "MoveParam.SpawnSpeedZSpecUp",
+          "label": "투척 초기 속도",
+          "kind": "speed",
+          "curve": [
+            2.0,
+            2.3,
+            2.6
+          ],
+          "source": "MoveParam.SpawnSpeedZSpecUp"
+        }
+      ]
+    },
+    "SpUltraShot": {
+      "source": "data/parameter/1130/weapon/WeaponSpUltraShot.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "BlastParam.SubSpecialSpecUpList.0.Value",
+          "label": "폭발 칠 반지름",
+          "kind": "distance",
+          "curve": [
+            3.2,
+            3.6,
+            4.0
+          ],
+          "source": "BlastParam.SubSpecialSpecUpList.0.Value"
+        },
+        {
+          "id": "BlastParam.SubSpecialSpecUpList.1.Value",
+          "label": "폭발 피해 범위 배율",
+          "kind": "ratio",
+          "curve": [
+            1.0,
+            1.15,
+            1.3
+          ],
+          "source": "BlastParam.SubSpecialSpecUpList.1.Value"
+        },
+        {
+          "id": "spl__WeaponSpUltraShotParam.SpecialDurationFrame",
+          "label": "지속 시간",
+          "kind": "frames",
+          "curve": [
+            330.0,
+            405.0,
+            480.0
+          ],
+          "source": "spl__WeaponSpUltraShotParam.SpecialDurationFrame"
+        }
+      ]
+    },
+    "SpUltraStamp": {
+      "source": "data/parameter/1130/weapon/WeaponSpUltraStamp.game__GameParameterTable.json",
+      "effects": [
+        {
+          "id": "spl__WeaponSpUltraStampParam.SpecialTotalFrame",
+          "label": "지속 시간",
+          "kind": "frames",
+          "curve": [
+            450.0,
+            570.0,
+            660.0
+          ],
+          "source": "spl__WeaponSpUltraStampParam.SpecialTotalFrame"
+        }
+      ]
+    }
+  }
+}

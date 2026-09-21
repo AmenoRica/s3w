@@ -1,0 +1,44 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
+import {initialState} from '../gear/core.js';
+import {readSelection, selectionSearch} from '../gear/share.js';
+const context = {window:{}};
+vm.runInNewContext(readFileSync(new URL('../data.js', import.meta.url), 'utf8'), context);
+const catalogue = context.window.WEAPON_DATA;
+const data = JSON.parse(readFileSync(new URL('../gear/data.json', import.meta.url), 'utf8'));
+const state = initialState();
+state.weapon = catalogue.weapons[0].key;
+state.slots = [['EndAllUp','MainInk_Save','None','InkRecovery_Up'],['ExSkillDouble','HumanMove_Up','SquidMove_Up','SubInk_Save'],['SuperJumpSign_Hide','RespawnTime_Save','SpecialIncrease_Up','Action_Up']];
+state.cooler = true;
+state.active = ['EndAllUp'];
+state.ldeStage = 3;
+const expected = {...initialState(), weapon:state.weapon, slots:state.slots};
+const search = selectionSearch(state, '?extra=keep');
+assert.ok(search.includes('&head=LDE,ISM,-,IRU&clothes=ADB,RSU,SSU,ISS&shoes=STJ,QRS,SCU,IAU'));
+assert.ok(!search.includes('%2C'));
+assert.deepEqual(readSelection('?head=IAU,-,-,-',data,catalogue).slots, [['Action_Up','None','None','None'],...initialState().slots.slice(1)]);
+assert.deepEqual(readSelection(search,data,catalogue), expected);
+assert.equal(new URLSearchParams(search.slice(1)).get('extra'), 'keep');
+assert.equal(new URLSearchParams(search.slice(1)).has('cooler'), false);
+for (const weapon of catalogue.weapons) assert.equal(readSelection(selectionSearch({...state,weapon:weapon.key}),data,catalogue).weapon, weapon.key);
+for (const invalid of ['?weapon=bad', '?gear=None', '?head=Action_Up,-', '?shoes=-,-,-,-,-', search.replace('LDE','bad'), search.replace('ISM','LDE'), '?head=Action_Up,-,-,-', '?head=None,-,-,-', '?head=ism,-,-,-', '?head=__proto__,-,-,-']) assert.deepEqual(readSelection(invalid,data,catalogue), initialState());
+assert.deepEqual(readSelection('',data,catalogue),initialState());
+assert.deepEqual(readSelection(selectionSearch(initialState()),data,catalogue),initialState());
+assert.deepEqual(readSelection('#weapon=Shooter_Short_00',data,catalogue),initialState());
+console.log('PASS: weapon/12-slot round trips, conditions excluded, reset, invalid links and unrelated parameters.');
+
+const codes = new Set();
+for (const [key, ability] of Object.entries(data.gear)) {
+  const sample = initialState();
+  const row = Math.max(0, ['Head','Clothes','Shoes'].indexOf(ability.slot));
+  sample.slots[row][0] = key;
+  const encoded = selectionSearch(sample);
+  const code = new URLSearchParams(encoded).get(['head','clothes','shoes'][row]).split(',')[0];
+  assert.match(code, key === 'None' ? /^-$/ : /^[A-Z]{3}$/);
+  assert.ok(!codes.has(code), `duplicate URL code: ${code}`);
+  codes.add(code);
+  assert.deepEqual(readSelection(encoded,data,catalogue), sample, key);
+}
+assert.throws(() => selectionSearch({...state, slots:[['Unknown','None','None','None'], ...state.slots.slice(1)]}), /Unknown gear ability/);
+console.log('PASS: all ability codes are unique, three letters, and restore the original slots.');

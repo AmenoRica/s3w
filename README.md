@@ -1,8 +1,8 @@
 # 스플래툰 3 무기 데이터베이스
 
-**기본 실행 환경은 [GitHub Pages 공개 사이트](https://amenorica.github.io/s3w/)입니다.**
+**공개 사이트는 [ameno.cc/s3w/](https://ameno.cc/s3w/)이며 Cloudflare Workers에서 제공합니다.**
 로컬 확인은 아래의 HTTP 서버를 사용하세요. 스테이지는 모듈·데이터 요청을 사용하므로 HTML 파일 직접 열기를 기본 실행 방식으로 사용하지 않습니다.
-HTML·CSS·일반 JavaScript로 만든 정적 페이지입니다. npm 설치나 빌드가 필요하지 않습니다.
+HTML·CSS·일반 JavaScript로 만든 정적 페이지입니다. 단순 로컬 실행에는 npm 설치나 빌드가 필요하지 않습니다. 링크 미리보기와 Cloudflare 배포에는 아래 Worker 구성을 사용합니다.
 게임 데이터·이미지·글꼴은 포함되어 있습니다. 관련 공략 목록은 Google Sheets에서 가져옵니다.
 
 ## 기능
@@ -90,6 +90,19 @@ API 키·별도 서버·라이브러리 설치는 필요 없습니다. 다른 �
 이는 해당 변형의 모든 성능이 동일하다고 단정하는 처리가 아닙니다.
 전용 설명이 없는 15개 무기는 다른 무기 대사로 대체하지 않습니다.
 
+## Cloudflare Workers 배포
+
+```sh
+npm ci
+npm run deploy
+```
+
+`wrangler.jsonc`는 `ameno.cc/s3w*` 라우트로 `/s3w`와 `/s3w/` 아래를 연결합니다. 와일드카드는 `/s3w?…`도 처리하기 위한 것이며 다른 접두사 경로는 404를 반환합니다. Cloudflare 로그인과 도메인의 프록시 DNS 레코드가 필요합니다. `npm run build:worker`는 기존 런타임 묶음을 `_worker-assets/s3w/`로 조립하고, 무기 정본에서 미리보기용 이름 목록을 생성합니다. 소스·도구·인증 정보는 배포 파일에 포함되지 않습니다.
+
+정적 파일은 Assets에서 제공하며, 기어 페이지 HTML에 Worker가 OG/Twitter 메타 태그를 넣습니다. `/s3w/og.png`는 선택한 무기와 12칸을 1200×630 PNG로 렌더링합니다. 브라우저와 같은 입력 검증을 사용하고 잘못된 조합은 기본값으로 처리합니다. PNG는 선택값과 콘텐츠 버전으로 캐시합니다. 별도 이미지 서비스나 데이터베이스는 사용하지 않습니다.
+
+로컬 Worker 확인은 `npm run dev:worker`로 시작하고, 다른 터미널에서 `node tools/check-worker.mjs`를 실행합니다. 배포 후에는 `node tools/check-worker.mjs https://ameno.cc`로 실제 HTML·PNG·경로를 확인합니다.
+
 ## GitHub Pages 배포
 
 `.github/workflows/pages.yml`이 `main` 푸시 또는 수동 실행 시 검증 → 배포 파일 조립 → GitHub Pages 배포를 수행합니다. PR에서는 검증과 조립까지만 실행합니다. 저장소 Pages의 Source는 **GitHub Actions**를 사용합니다.
@@ -101,7 +114,7 @@ node tools/verify-pages.mjs
 
 배포에는 `_site/`만 사용합니다. 런타임 코드, 무기 이미지·글꼴, 스테이지 썸네일과 manifest가 참조하는 지형만 포함합니다. 기존 렌더러의 대체 지형도 유지합니다. `outputs/`, `map-demo/`, `planner-demo/`, `tools/`, 문서와 Git 메타데이터는 포함하지 않습니다. 원본 폴더와 실험 결과는 삭제하지 않습니다.
 
-현재 배포 묶음은 576개 파일, 약 156 MB입니다. JS·CSS·JSON 참조는 콘텐츠 기반의 공통 릴리스 식별자로 갱신합니다. GitHub Pages 프로젝트 하위 경로에서도 동작하도록 상대 경로를 유지합니다. 압축 지형은 일반 `.bin.gz` 파일로 제공하며 별도 `Content-Encoding` 설정을 추가하지 않습니다.
+현재 배포 묶음은 약 157 MB입니다. JS·CSS·JSON 참조는 콘텐츠 기반의 공통 릴리스 식별자로 갱신합니다. GitHub Pages 프로젝트 하위 경로에서도 동작하도록 상대 경로를 유지합니다. 압축 지형은 일반 `.bin.gz` 파일로 제공하며 별도 `Content-Encoding` 설정을 추가하지 않습니다.
 
 CI는 실험 결과가 필요한 `verify-minimaps.mjs`를 제외한 동작 검증과 배포 결과물 검증을 실행합니다. 로컬 정밀 비교는 `node tools/verify-minimaps.mjs`로 별도 실행합니다. 배포 검증은 39개 스테이지·167개 조합, 지형 디코딩, 파일 참조와 캐시 버전, 개발 파일 제외를 확인합니다.
 
@@ -158,3 +171,13 @@ Catalogue 구성, Brutal의 굵은 선과 제목, Splatoon을 연상시키는 �
 스테이지 아래의 **마커 링크 복사**는 현재 맵·룰과 마커 위치, 방향, 배경색, 기어 AP, 샤크라이드 출발점을 링크에 담습니다. 링크를 열면 배치를 복원합니다. 복사 뒤 수정한 배치는 새 링크를 복사해야 반영됩니다. 카메라 상태는 저장하지 않습니다.
 
 공유 링크는 좌표를 0.01 단위의 signed int16, 방향을 한 바퀴의 1/256 단위로 저장합니다. 링크 내부의 무기 키 목록을 참조하고 기본 설정은 생략합니다. 바이너리 v2와 gzip으로 더 짧아진 경우의 v3를 지원하며, 이전 JSON v1 링크도 읽습니다. 압축은 링크 생성 시에만 적용하고 현재 화면의 좌표는 바꾸지 않습니다. 지형 경계에 정확히 걸친 배치는 반올림으로 가림 판정이 달라질 수 있습니다.
+
+## 기어 파워 계산기
+
+`gear/`는 무기·스테이지 옆의 세 번째 탭으로 배포합니다. 계산 데이터는 읽기 전용이며 무기·기어 12칸은 `?weapon=…&head=…&clothes=…&shoes=…&lang=…` 주소로 공유합니다. 각 부위는 메인 1칸·서브 3칸 순서이며 기어는 3글자 영문 약어(예: `head=LDE,ISM,-,IRU`), 빈 칸은 `-`입니다. 전체 기어 이름 URL은 지원하지 않습니다. 브라우저와 Worker의 공유 이미지·대표 URL은 `gear/share.js`의 동일한 약어 규칙을 사용합니다. 기어 페이지의 기존 `#` 공유 형식은 지원하지 않습니다. 발동 조건은 링크에 저장하지 않습니다. 기존 11개 언어·14개 지역 선택을 지원하고 공식 무기·기어 이름을 사용합니다. 언어 변경 시 무기·기어·발동 조건을 유지합니다. 공통 상단바는 `site-header.css`에서 관리합니다.
+
+- 계산 검사: `node tools/verify-gear-demo.mjs`
+- 번역·공식 명칭 검사: `node tools/verify-gear-localization.mjs`
+- 공유 주소 검사: `node tools/verify-gear-share.mjs`
+- 데이터 갱신: `python3 tools/build-gear-demo-data.py`
+- 번역 수정: `gear/messages.json`

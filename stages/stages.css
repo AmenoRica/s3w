@@ -64,3 +64,7 @@
 
 .bomb-charge{position:absolute;transform:translateX(-50%);padding:4px 7px;border-radius:5px;background:#20252eef;color:#fff;font-size:12px;white-space:nowrap;pointer-events:none;z-index:5}
 .bomb-charge[hidden]{display:none}
+
+
+.map-view #stealth-jump-toggle{position:absolute;top:64px;right:12px;min-height:36px;padding:6px 10px;font-size:11px;background:#26313a;color:#ece8dc;border:1px solid #46515a}.map-view #stealth-jump-toggle[aria-pressed="true"]{background:#ece8dc;color:#26313a}.stealth-jump-overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:hidden}.stealth-jump-overlay[hidden]{display:none}
+@media(max-width:480px){.map-view #stealth-jump-toggle{top:112px}}

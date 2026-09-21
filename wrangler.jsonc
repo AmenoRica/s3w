@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "s3w",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-09-21",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "_worker-assets",
+    "binding": "ASSETS",
+    "run_worker_first": ["/s3w/gear-demo", "/s3w/gear-demo/*", "/s3w/gear/", "/s3w/gear/index.html", "/s3w/og.png"]
+  },
+  // The wildcard also matches query strings on the slashless /s3w URL.
+  "routes": [{"pattern": "ameno.cc/s3w*", "zone_name": "ameno.cc"}],
+  "observability": {"enabled": true},
+  "rules": [{"type": "CompiledWasm", "globs": ["**/*.wasm"], "fallthrough": true}]
+}

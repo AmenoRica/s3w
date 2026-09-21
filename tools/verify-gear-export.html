@@ -1,0 +1,24 @@
+<!doctype html><meta charset="utf-8"><title>PNG export verification</title><style>img{max-width:100%;height:auto}</style><body><p id="status">Loading</p><script type="module">
+import {selectionImage,selectionTotals} from '../gear/export-image.js?v=20260921-totals-shift';
+const data=await fetch('../gear/data.json').then(r=>r.json());
+const state={weapon:'Shooter_Short_00',slots:[['EndAllUp','MainInk_Save','None','InkRecovery_Up'],['ExSkillDouble','HumanMove_Up','SquidMove_Up','SubInk_Save'],['SuperJumpSign_Hide','RespawnTime_Save','SpecialIncrease_Up','Action_Up']]};
+try {
+ const totals=selectionTotals([
+  ['MainInk_Save','MainInk_Save','MainInk_Save','MainInk_Save'],
+  ['ExSkillDouble','InkRecovery_Up','InkRecovery_Up','InkRecovery_Up'],
+  ['SuperJumpSign_Hide','MainInk_Save','None','None']
+ ],data.gear);
+ if(JSON.stringify(totals)!==JSON.stringify([['ExSkillDouble',10],['SuperJumpSign_Hide',10],['MainInk_Save',22],['InkRecovery_Up',9]]))throw Error('Wrong totals or order');
+ if(selectionTotals([['None','None','None','None']],data.gear).length)throw Error('Empty slots counted');
+ const ordered=selectionTotals(state.slots,data.gear).slice(0,3).map(([key])=>key).join(',');
+ if(ordered!=='EndAllUp,ExSkillDouble,SuperJumpSign_Hide')throw Error('Wrong exclusive order');
+ const shifted=selectionTotals([['MainInk_Save','MainInk_Save','MainInk_Save','MainInk_Save']],data.gear,1);
+ if(JSON.stringify(shifted)!==JSON.stringify([['MainInk_Save',13]]))throw Error('Wrong Shift totals');
+ const shiftPending=selectionImage(state,data,1);
+ const pending=selectionImage(state,data);state.slots[0][0]='None';
+ const blob=await pending;const image=new Image();image.src=URL.createObjectURL(blob);await image.decode();
+ if(blob.type!=='image/png'||image.naturalWidth!==1200||image.naturalHeight!==750)throw Error('Wrong PNG format');
+ document.body.append(image);
+ const shiftImage=new Image();shiftImage.src=URL.createObjectURL(await shiftPending);await shiftImage.decode();document.body.append(shiftImage);document.querySelector('#status').textContent='PASS: PNG 1200 × 750; normal 0.3 and Shift 0.1 totals';
+} catch(error){document.querySelector('#status').textContent='FAIL: '+error;}
+</script>

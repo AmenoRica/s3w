@@ -1,0 +1,30 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+import {initialState, calculate} from '../gear/core.js';
+import {journeyAt} from '../gear/respawn-jump.js';
+const context={window:{}};
+vm.runInNewContext(fs.readFileSync(new URL('../data.js',import.meta.url),'utf8'),context);
+const data=JSON.parse(fs.readFileSync(new URL('../gear/data.json',import.meta.url),'utf8'));
+const state=initialState(), catalogue=context.window.WEAPON_DATA;
+const base=calculate(state,data,catalogue);
+const total=journeyAt(base.respawn.frames,base.jump,0).total;
+assert.equal(total,668);
+assert.equal(journeyAt(450,base.jump,449).phase,'부활 중');
+assert.equal(journeyAt(450,base.jump,450).phase,'차지 중');
+assert.equal(journeyAt(450,base.jump,530).phase,'비행 중');
+assert.equal(journeyAt(450,base.jump,668).phase,'도착');
+assert.equal(journeyAt(450,base.jump,800).progress,1);
+let previous=0;
+for(let f=0;f<=total+60;f++){
+  const {progress}=journeyAt(450,base.jump,f);
+  assert.ok(progress>=previous && progress<=1);previous=progress;
+}
+state.slots[0][1]='JumpTime_Save';
+const quick=calculate(state,data,catalogue);
+assert.equal(quick.respawn.frames,base.respawn.frames);
+assert.ok(journeyAt(quick.respawn.frames,quick.jump,0).total<total);
+state.slots[2][0]='SuperJumpSign_Hide';
+const stealth=calculate(state,data,catalogue);
+assert.equal(journeyAt(stealth.respawn.frames,stealth.jump,0).total,stealth.respawn.frames+stealth.jump.chargeFrames+stealth.jump.flightFrames+stealth.jump.extraFrames);
+console.log('PASS: respawn/jump boundaries, one-way motion, arrival hold, QSJ reduction and existing stealth correction.');

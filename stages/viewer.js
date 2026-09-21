@@ -3,10 +3,12 @@ import {t,localizedText} from './i18n.js?v=20260919-l10n-2';
 import {terrainEdges} from './edges.js';
 import {createObjectives} from './objectives.js?v=20260919-l10n-2';
 import {createWeaponPlacement} from './weapons.js?v=20260920-ultrashot';
+import {createStealthJump} from './stealth-jump.js?v=20260921-stealth-v3';
 import {pickTerrain} from './range-math.js';
 export function createMapViewer(root,{onChange=()=>{}}={}){
 const canvas=root.querySelector('#map'),status=root.querySelector('#status');
 const objectives=createObjectives(root.querySelector('#objectives'));
+const stealthJump=createStealthJump(root,schedule);
 let yaw=0,tilt=0,zoom=1,gl,program,vertexCount=0,meta,frame=0,opaqueCount=0,meshBuffer,grateData,sortedGrates,grateCenters,grateOrder;
 const uniforms={},attributes={};
 let edgeStart=0,edgeCount=0,orthographic=true,terrain=new Float32Array();
@@ -54,6 +56,7 @@ function draw(){
  bindTerrain();
  const view=matrix();gl.uniformMatrix4fv(uniforms['view'],false,view);
  objectives.draw(view,canvas.clientWidth,canvas.clientHeight);
+ stealthJump.draw(view,canvas.clientWidth,canvas.clientHeight);
  gl.uniform1f(uniforms['ceilingHeight'],Number.isFinite(ceilingHeight)?ceilingHeight:1e4);
  gl.uniform1f(uniforms['hideCeiling'],hideCeiling?1:0);
  gl.uniform1f(uniforms['edgePass'],0);
@@ -137,7 +140,7 @@ function bindTerrain(){
  for(const [name,size,offset] of [['position',3,0],['normal',3,12],['category',1,24]]){const loc=attributes[name];gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,size,gl.FLOAT,false,28,offset)}
 }
 function show(mapMeta,source,reset=true){
- if(!gl)prepare();gl.useProgram(program);terrain=source;objectives.show(mapMeta.objectives);meta=mapMeta;ceilingHeight=meta.ceilingHeight;vertexCount=0;
+ if(!gl)prepare();gl.useProgram(program);terrain=source;objectives.show(mapMeta.objectives);stealthJump.show(mapMeta.respawns);meta=mapMeta;ceilingHeight=meta.ceilingHeight;vertexCount=0;
  gl.uniform2fv(uniforms['heightRange'],meta.heightRange||[0,12]);
  gl.uniform1f(uniforms['water'],meta.water??-1e4);
  const solid=[],grates=[];
@@ -152,5 +155,5 @@ function show(mapMeta,source,reset=true){
  if(meshBuffer)gl.deleteBuffer(meshBuffer);meshBuffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,meshBuffer);gl.bufferData(gl.ARRAY_BUFFER,packed,gl.DYNAMIC_DRAW);for(const [name,size,offset] of [['position',3,0],['normal',3,12],['category',1,24]]){const loc=attributes[name];gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,size,gl.FLOAT,false,28,offset)}
  vertexCount=edgeStart;weapons.ready(source);status.hidden=true;if(reset){yaw=(meta?.initialYaw||0)+Math.PI/2;tilt=0;zoom=1;pan=[0,0,0]}update();
 }
-return {show,confirmClear:()=>weapons.confirmClear(),clearMarkers:()=>weapons.clear(),snapshot:()=>weapons.snapshot(),loading(message='지형을 불러오는 중…',shared=null){terrain=new Float32Array();weapons.clear(shared);objectives.clear();vertexCount=0;if(gl)gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);status.hidden=false;localizedText(status,message)},error(error){status.hidden=false;localizedText(status,window.SITE_I18N.messages[error.message]?error.message:'지형을 불러오지 못했습니다. 다시 시도해 주세요.')},resize:schedule};
+return {show,confirmClear:()=>weapons.confirmClear(),clearMarkers:()=>weapons.clear(),snapshot:()=>weapons.snapshot(),loading(message='지형을 불러오는 중…',shared=null){terrain=new Float32Array();weapons.clear(shared);objectives.clear();stealthJump.clear();vertexCount=0;if(gl)gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);status.hidden=false;localizedText(status,message)},error(error){status.hidden=false;localizedText(status,window.SITE_I18N.messages[error.message]?error.message:'지형을 불러오지 못했습니다. 다시 시도해 주세요.')},resize:schedule};
 }
