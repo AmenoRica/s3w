@@ -587,10 +587,11 @@ async function init() {
       openInkTest(result, catalogue.parameters[result.weapon.actor], locale, t);
     }
   });
-  $('copy-link').addEventListener('click', async () => {
+  $('copy-link').addEventListener('click', async event => {
     const url = new URL(location.href);
     url.search = selectionSearch(state, new URLSearchParams({lang:$('language').value}));
     url.hash = '';
+    if (event.shiftKey) url.href = 'https://amenorica.github.io/s3w/gear/' + url.search;
     $('share-status').textContent = '';
     try { await navigator.clipboard.writeText(url.href); $('share-status').textContent = t('링크를 복사했습니다.'); }
     catch { window.prompt(t('링크를 복사해 주세요.'), url.href); }

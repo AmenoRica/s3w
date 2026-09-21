@@ -109,13 +109,14 @@
       <span class="card-name">${esc(pack.names[w.key])}</span><span class="card-meta"><span>${esc(pack.types[w.type])}</span><span>${num(w.sp)} SP</span></span></button>`);
     $('catalogue').innerHTML = randomSeed === null ? cards.join('') : Array.from({length:Math.ceil(cards.length/4)}, (_, i) => `<section class="random-group" aria-labelledby="random-group-${i}" id="team-${i+1}"><div class="group-heading"><h2 class="group-number" id="random-group-${i}">${num(i+1)}</h2><button type="button" class="copy-team" data-team="${i+1}" aria-live="polite"><span class="copy-label">${esc(copyLabels[groups[language]][0])}</span>${copyLabels[groups[language]].slice(0,3).map(label => `<span class="copy-size" aria-hidden="true">${esc(label)}</span>`).join('')}</button></div><div class="group-weapons">${cards.slice(i*4,i*4+4).join('')}</div></section>`).join('');
   }
-  async function copyTeam(button) {
+  async function copyTeam(button, shiftKey) {
     const labels = copyLabels[groups[language]];
     const label = button.querySelector('.copy-label');
     const team = Number(button.dataset.team);
     const names = Array.from(button.closest('.random-group').querySelectorAll('.card-name'), el => el.textContent);
     const url = new URL(location.protocol === 'file:' ? 'https://amenorica.github.io/s3w/' : location.href);
     url.hash = new URLSearchParams({rand:randomSeed, lang:language, team:String(team)}).toString();
+    if (shiftKey) url.href = 'https://amenorica.github.io/s3w/' + url.search + url.hash;
     const text = [labels[3].replace('{n}',num(team)), ...names.map((name,i) => `${i+1}.${name}`), url.href].join('\n');
     button.disabled = true;
     try {
@@ -302,7 +303,7 @@
   ['type','sort'].forEach(id => $(id).addEventListener('change', () => {setRandom(null); renderList(); writeURL();}));
   $('catalogue').addEventListener('click', e => {
     const copy = e.target.closest('.copy-team');
-    if (copy) { copyTeam(copy); return; }
+    if (copy) { copyTeam(copy, e.shiftKey); return; }
     const button = e.target.closest('[data-weapon]'); if (button) openWeapon(button.dataset.weapon);
   });
   $('close').addEventListener('click', () => $('detail').close());

@@ -92,10 +92,11 @@ $('filters').onsubmit=e=>e.preventDefault();$('search').oninput=()=>data&&list()
 $('mode').onchange=()=>{const params=new URLSearchParams({stage:active,mode:$('mode').value});location.hash=params.toString()};$('map-retry').onclick=route;window.addEventListener('hashchange',route);
 try{[data,minimaps,objectives,respawns]=await Promise.all(['data.json','minimaps.json','objectives.json','respawns.json'].map(async file=>{const response=await fetch(file);if(!response.ok)throw Error('목록을 불러오지 못했습니다.');return response.json()}));list();route()}catch(error){$('count').textContent='';$('list-error').hidden=false;}
 
-$('marker-share').onclick=async()=>{
+$('marker-share').onclick=async event=>{
  const url=new URL(location.href);
  try{url.hash=new URLSearchParams({stage:active,mode:$('mode').value,markers:await viewer.snapshot()}).toString()}
  catch{window.SITE_I18N.text($('marker-share-status'),'마커 링크를 만들지 못했습니다.');return}
+ if(event.shiftKey)url.href='https://amenorica.github.io/s3w/stages/'+url.search+url.hash;
  try{await navigator.clipboard.writeText(url.href);window.SITE_I18N.text($('marker-share-status'),'마커 링크를 복사했습니다.');}
  catch{window.prompt(t('마커 링크를 복사해 주세요.'),url.href);}
 };
