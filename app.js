@@ -114,7 +114,7 @@
     const label = button.querySelector('.copy-label');
     const team = Number(button.dataset.team);
     const names = Array.from(button.closest('.random-group').querySelectorAll('.card-name'), el => el.textContent);
-    const url = new URL(location.protocol === 'file:' ? 'https://amenorica.github.io/splatoon3-weapon-browser/' : location.href);
+    const url = new URL(location.protocol === 'file:' ? 'https://amenorica.github.io/s3w/' : location.href);
     url.hash = new URLSearchParams({rand:randomSeed, lang:language, team:String(team)}).toString();
     const text = [labels[3].replace('{n}',num(team)), ...names.map((name,i) => `${i+1}.${name}`), url.href].join('\n');
     button.disabled = true;

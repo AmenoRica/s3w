@@ -1,6 +1,6 @@
 # 스플래툰 3 무기 데이터베이스
 
-**기본 실행 환경은 [GitHub Pages 공개 사이트](https://amenorica.github.io/splatoon3-weapon-browser/)입니다.**
+**기본 실행 환경은 [GitHub Pages 공개 사이트](https://amenorica.github.io/s3w/)입니다.**
 로컬 확인은 아래의 HTTP 서버를 사용하세요. 스테이지는 모듈·데이터 요청을 사용하므로 HTML 파일 직접 열기를 기본 실행 방식으로 사용하지 않습니다.
 HTML·CSS·일반 JavaScript로 만든 정적 페이지입니다. npm 설치나 빌드가 필요하지 않습니다.
 게임 데이터·이미지·글꼴은 포함되어 있습니다. 관련 공략 목록은 Google Sheets에서 가져옵니다.
