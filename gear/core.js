@@ -99,7 +99,7 @@ export function validateData(data, catalogue) {
 
 export function initialState() {
   return {weapon: 'Shooter_Normal_00', slots: Array.from({length:3}, () => Array(4).fill('None')),
-    active: [], ldeStage: 21, tenacityDeficit: 1, cooler: false, jumpDistance: 100, respawnActive: false, enemyRespawnPenalty: false, enemySub: 'Bomb_Splash', enemySubAP: 0, mistLevel: 1};
+    active: [], ldeStage: 21, tenacityDeficit: 1, cooler: false, jumpTarget: 'normal', beaconSubAP: null, jumpDistance: 100, respawnActive: false, enemyRespawnPenalty: false, enemySub: 'Bomb_Splash', enemySubAP: 0, mistLevel: 1};
 }
 
 // Compare incoming effects with identical opponent AP; only the defender AP changes.
@@ -131,7 +131,7 @@ export function canEquip(data, key, row, slot) {
 }
 
 export function validateState(state, data, catalogue) {
-  exactKeys(state, ['weapon','slots','active','ldeStage','tenacityDeficit','cooler','jumpDistance','respawnActive','enemyRespawnPenalty','enemySub','enemySubAP','mistLevel'], 'selection');
+  exactKeys(state, ['weapon','slots','active','ldeStage','tenacityDeficit','cooler','jumpTarget','beaconSubAP','jumpDistance','respawnActive','enemyRespawnPenalty','enemySub','enemySubAP','mistLevel'], 'selection');
   assert(catalogue.weapons.some(w => w.key === state.weapon), '알 수 없는 무기');
   assert(Array.isArray(state.slots) && state.slots.length === 3, '기어 3개 필요');
   state.slots.forEach((row, r) => {
@@ -141,6 +141,8 @@ export function validateState(state, data, catalogue) {
   assert(Array.isArray(state.active) && new Set(state.active).size === state.active.length && state.active.every(k => ['StartAllUp','EndAllUp','ComeBack','SomersaultLanding','MinorityUp'].includes(k)), '알 수 없는 발동 조건');
   assert(Number.isInteger(state.ldeStage) && state.ldeStage >= 1 && state.ldeStage <= 21, '라스트 스퍼트 단계는 1–21');
   assert(Number.isInteger(state.tenacityDeficit) && state.tenacityDeficit >= 0 && state.tenacityDeficit <= 3, '인원 차이는 0–3');
+  assert(['normal','beacon'].includes(state.jumpTarget), '알 수 없는 점프 대상');
+  assert(state.beaconSubAP === null || Number.isInteger(state.beaconSubAP) && state.beaconSubAP >= 0 && state.beaconSubAP <= 57, '비컨 서브 AP는 0–57');
   assert(Number.isInteger(state.jumpDistance) && state.jumpDistance >= 60 && state.jumpDistance <= 100, '스텔스 거리 범위 오류');
   assert(typeof state.respawnActive === 'boolean' && typeof state.enemyRespawnPenalty === 'boolean', '부활 조건 토글 오류');
   assert(Object.hasOwn(data.defense, state.enemySub), '알 수 없는 상대 서브');
@@ -323,14 +325,18 @@ export function calculate(state, data, catalogue) {
   const sub = data.subs[weapon.sub];
   const subCost = sub.inkFraction * curve(`ConsumeRt_Sub_Lv${sub.saveLevel}`, 'SubInk_Save');
   const subEffects = resultEffects(sub, ap.SubSpec_Up, data);
-  if (weapon.sub === 'Beacon') {
+  const beaconBonus = value => {
     const {beaconMidAP: mid, beaconMaxAP: max, beaconMidInput: input} = data.rules;
     const coefficient = (mid - input) / (input * (input - max));
-    const bonus = Math.floor(coefficient * ap.SubSpec_Up ** 2 + (1 - coefficient * max) * ap.SubSpec_Up + 1e-9);
-    subEffects.push({id:'beacon', label:'이 비콘 이용자의 점프 단축', base:0, value:bonus, unit:'AP', kind:'ap', source:'spl__PlayerBeaconSubSpecUpParam.SubSpecUpParam'});
+    return Math.floor(coefficient * value ** 2 + (1 - coefficient * max) * value + 1e-9);
+  };
+  if (weapon.sub === 'Beacon') {
+    subEffects.push({id:'beacon', label:'이 비콘 이용자의 점프 단축', base:0, value:beaconBonus(ap.SubSpec_Up), unit:'AP', kind:'ap', source:'spl__PlayerBeaconSubSpecUpParam.SubSpecUpParam'});
   }
-  const chargeFrames = Math.ceil(curve('SuperJump_ChargeFrm', 'JumpTime_Save'));
-  const flightFrames = Math.ceil(curve('SuperJump_MoveFrm', 'JumpTime_Save'));
+  const beaconSubAP = state.beaconSubAP ?? (weapon.sub === 'Beacon' ? ap.SubSpec_Up : 0);
+  const jumpAP = Math.min(data.rules.maxAP, ap.JumpTime_Save + (state.jumpTarget === 'beacon' ? beaconBonus(beaconSubAP) : 0));
+  const chargeFrames = Math.ceil(interpolate(weaponCurve(params,data,'SuperJump_ChargeFrm'),jumpAP));
+  const flightFrames = Math.ceil(interpolate(weaponCurve(params,data,'SuperJump_MoveFrm'),jumpAP));
   // User-requested approximation: zero through 60 units, full penalty from 100 units.
   const extraFrames = points.equipped.includes('SuperJumpSign_Hide') ? Math.ceil((state.jumpDistance - 60) / 40 * data.rules.stealthExtraMaxFrames) : 0;
   const tenacityRate=points.active.includes('MinorityUp')?data.rules.tenacityRates[state.tenacityDeficit]:0;
@@ -348,6 +354,6 @@ export function calculate(state, data, catalogue) {
     sub:{count:Math.floor((tank + 1e-12) / subCost), baseCount:Math.floor((tank + 1e-12) / sub.inkFraction), percent:subCost / tank * 100, basePercent:sub.inkFraction / tank * 100, effects:subEffects,throw:throwEstimate(sub,ap.SubSpec_Up)},
     special:{points:Math.ceil(weapon.sp / curve('IncreaseRt_Special', 'SpecialIncrease_Up')), loss:Math.max(0, Math.min(1, 1 - curve('SpecialGaugeRt_Restart','RespawnSpecialGauge_Save') + ownPenalty + enemyLoss)) * 100,
       effects:resultEffects(data.specials[weapon.special], ap.SpecialSpec_Up, data), tenacity:tenacityRate||null,tenacityCharge},
-    movement, recovery, respawn, surge:{frames:Math.ceil(curve('WallJumpChargeFrm','Action_Up')),baseFrames:data.curves.WallJumpChargeFrm[0]}, jump:{chargeFrames, flightFrames, extraFrames, arrivalMin:chargeFrames + flightFrames, arrivalMax:chargeFrames + flightFrames + extraFrames},
+    movement, recovery, respawn, surge:{frames:Math.ceil(curve('WallJumpChargeFrm','Action_Up')),baseFrames:data.curves.WallJumpChargeFrm[0]}, jump:{beaconSubAP, ap:jumpAP, chargeFrames, flightFrames, extraFrames, arrivalMin:chargeFrames + flightFrames, arrivalMax:chargeFrames + flightFrames + extraFrames},
   };
 }

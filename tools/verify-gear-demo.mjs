@@ -21,7 +21,7 @@ near(plain.main.attacks[0].percent,.92);
 assert.equal(plain.sub.count,1);near(plain.sub.percent,70);
 assert.equal(plain.special.points,200);near(plain.special.loss,50);
 near(plain.movement[0].value,2.304);near(plain.movement[1].value,1.152);
-assert.deepEqual(plain.jump,{chargeFrames:80,flightFrames:138,extraFrames:0,arrivalMin:218,arrivalMax:218});
+assert.deepEqual(plain.jump,{beaconSubAP:0,ap:0,chargeFrames:80,flightFrames:138,extraFrames:0,arrivalMin:218,arrivalMax:218});
 near(interpolate(data.curves.ConsumeRt_Main,10),.86365);
 near(interpolate([1,1,1],57),1);
 for(const curve of Object.values(data.curves)){
@@ -191,6 +191,27 @@ for(const weapon of catalogue.weapons){
 }
 const beakon=catalogue.weapons.find(w=>w.sub==='Beacon');
 assert.equal(calc(build('SubSpec_Up',beakon.key)).sub.effects.find(e=>e.id==='beacon').value,57);
+// External beacons use the installer's AP, independently of our sub weapon.
+const beaconState={...initialState(),jumpTarget:'beacon'};
+assert.equal(calc(beaconState).jump.arrivalMax,218);
+beaconState.beaconSubAP=57;
+assert.equal(calc(beaconState).jump.ap,57);
+assert.equal(calc(beaconState).jump.arrivalMax,calc(build('JumpTime_Save')).jump.arrivalMax);
+assert.equal(calc({...beaconState,jumpTarget:'normal'}).jump.arrivalMax,218);
+const ownBeacon=build('SubSpec_Up',beakon.key);
+assert.equal(calc(ownBeacon).jump.beaconSubAP,57);
+assert.equal(calc(ownBeacon).jump.arrivalMax,218);
+ownBeacon.jumpTarget='beacon';
+assert.equal(calc(ownBeacon).jump.ap,57);
+ownBeacon.slots[0][0]='JumpTime_Save';
+assert.equal(calc(ownBeacon).jump.beaconSubAP,47);
+assert.equal(calc(ownBeacon).jump.ap,57);
+ownBeacon.beaconSubAP=0;
+assert.equal(calc(ownBeacon).jump.ap,10);
+assert.equal(calc({...ownBeacon,weapon:'Shooter_Normal_00',beaconSubAP:null}).jump.beaconSubAP,0);
+for(const change of [s=>s.jumpTarget='invalid',s=>s.beaconSubAP=-1,s=>s.beaconSubAP=58,s=>s.beaconSubAP=1.5,s=>s.beaconSubAP='10']){
+ const invalid=initialState();change(invalid);assert.throws(()=>calc(invalid));
+}
 const coolerWeapon=catalogue.weapons.find(w=>w.special==='SpEnergyStand');
 near(calc(build('SpecialSpec_Up',coolerWeapon.key)).special.effects.find(e=>e.kind==='frames').value,25);
 assert.equal(JSON.stringify(data),pristine);

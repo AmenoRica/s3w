@@ -1,9 +1,9 @@
-import {openRespawnJump} from './respawn-jump.js?v=20260921-overlay';
+import {openRespawnJump} from './respawn-jump.js?v=20260921-beacon-jump';
 import {openInkTest} from './ink-test.js?v=20260921-ballpoint';
 import {selectionImage} from './export-image.js?v=20260921-totals-shift';
-import {t, setupLanguage, languageCode, applyStatic, gearName} from './i18n.js?v=20260921-ballpoint';
-import {SLOT_TYPES, initialState, validateData, calculate, canEquip, movementTiming} from './core.js?v=20260921-sub-defense';
-import {readSelection, selectionSearch} from './share.js?v=20260921-sub-defense';
+import {t, setupLanguage, languageCode, applyStatic, gearName} from './i18n.js?v=20260921-beacon-jump';
+import {SLOT_TYPES, initialState, validateData, calculate, canEquip, movementTiming} from './core.js?v=20260921-beacon-jump';
+import {readSelection, selectionSearch} from './share.js?v=20260921-beacon-jump';
 
 const $ = id => document.getElementById(id);
 const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -277,6 +277,29 @@ function jumpDistanceControl() {
   if(!result.points.equipped.includes('SuperJumpSign_Hide'))return '';
   return `<label class="jump-penalty" for="jump-distance"><span>${t("스텔스 점프 거리 ")}<output id="jump-distance-value">${jumpDistanceLabel()}</output></span><input id="jump-distance" aria-label="${t("스텔스 점프 거리")}" aria-valuetext="${jumpDistanceLabel()}" type="range" min="12" max="20" step="0.2" value="${state.jumpDistance/data.rules.distancePerCell}"><span class="range-ends"><span>${t("12칸 이하")}</span><span>${t("20칸 이상")}</span></span></label><p class="small-note">${t("추가 비행 ")}<strong id="jump-extra">${timeLabel(result.jump.extraFrames)}</strong>${t(" · 스텔스 점프 보정은 정확하지 않을 수 있습니다")}</p>`;
 }
+function jumpTargetControl() {
+  return `<label class="toggle-label"><span>${t("비컨 대상 점프")}</span><input id="jump-target" type="checkbox" role="switch" ${state.jumpTarget==='beacon'?'checked':''}></label><label class="jump-penalty" id="jump-beacon-control" for="jump-beacon-ap" ${state.jumpTarget==='beacon'?'':'hidden'}><span>${t("설치자의 서브 성능 업")} <output id="jump-beacon-value">${number(result.jump.beaconSubAP)} AP</output></span><input id="jump-beacon-ap" type="range" min="0" max="57" step="1" value="${result.jump.beaconSubAP}" aria-valuetext="${number(result.jump.beaconSubAP)} AP"><span class="range-ends"><span>0 AP</span><span>57 AP</span></span></label>`;
+}
+function changeJump(id, value) {
+  if(id==='jump-target') state.jumpTarget=value?'beacon':'normal';
+  else if(id==='jump-beacon-ap') state.beaconSubAP=Number(value);
+  else if(id==='jump-distance') state.jumpDistance=Math.round(Number(value)*data.rules.distancePerCell);
+  result=calculate(state,data,catalogue);
+  $('jump-target').checked=state.jumpTarget==='beacon';
+  $('jump-beacon-control').hidden=state.jumpTarget!=='beacon';
+  $('jump-beacon-ap').value=result.jump.beaconSubAP;
+  $('jump-beacon-ap').setAttribute('aria-valuetext',`${number(result.jump.beaconSubAP)} AP`);
+  $('jump-beacon-value').textContent=`${number(result.jump.beaconSubAP)} AP`;
+  if($('jump-distance')) {
+    $('jump-distance').value=state.jumpDistance/data.rules.distancePerCell;
+    $('jump-distance-value').textContent=jumpDistanceLabel();
+    $('jump-distance').setAttribute('aria-valuetext',jumpDistanceLabel());
+    $('jump-extra').innerHTML=timeLabel(result.jump.extraFrames);
+  }
+  $('jump-metrics').innerHTML=jumpMetrics();
+  animateJump();
+  return {result,label:jumpDistanceLabel(),extra:timeLabel(result.jump.extraFrames),beaconLabel:`${number(result.jump.beaconSubAP)} AP`,target:state.jumpTarget};
+}
 function jumpMetrics() {
   const j=result.jump;
   return `${metric(t("차지"),j.chargeFrames,t("프레임"),80)}${metric(t("비행 + 패널티"),j.flightFrames+j.extraFrames,t("프레임"),138)}${metric(t("입력부터 도착까지"),j.arrivalMax,t("프레임"),218)}`;
@@ -334,7 +357,7 @@ function renderResults() {
     <section class="result-card full-width" aria-label="${t("잉크 회복 계산 결과")}"><div class="card-title"><h2>${t("잉크 회복")}</h2></div><div class="ink-comparison">${inkTank('ink-base',recovery.baseFrames,true)}<div class="tank-difference"><span>${t("회복 시간")}</span><strong>${recovery.baseFrames===recovery.frames?t("동일"):t('{n}초 단축',{n:seconds(recovery.baseFrames-recovery.frames)})}</strong></div>${inkTank('ink-current',recovery.frames)}</div></section>
     <section class="result-card full-width" aria-label="${t("이동 속도 계산 결과")}">${title(t("이동 속도"))}${movement.map(m=>fold(m.label,differs(m.value,m.base),`<div class="movement-row"><div class="motion-heading"><h3>${escape(t(m.label))}</h3><div class="speed-value">${number(m.value,3)} <small>${m.value == null ? '' : t("칸/초")}</small></div></div>${m.note ? `<p class="small-note">${escape(t(m.note))}</p>` : ''}${track(m.value,m.base,m.emoji,m.enemyInk)}</div>`)).join('')}</section>
     ${surgeView()}
-    <section class="result-card full-width" aria-label="${t("슈퍼 점프 계산 결과")}">${title(t("슈퍼 점프"))}<div id="jump-metrics" class="jump-metrics">${jumpMetrics()}</div>${jumpDistanceControl()}<button id="jump-start" type="button">${t("출발")}</button><div class="jump-stage" aria-hidden="true"><span id="jumper" class="jumper"><span id="jump-emoji">🐙</span></span></div><div class="jump-caption"><span>${t("출발")}</span><span>${t("도착")}</span></div></section>${respawnView()}${defenseView()}`;
+    <section class="result-card full-width" aria-label="${t("슈퍼 점프 계산 결과")}">${title(t("슈퍼 점프"))}<div id="jump-metrics" class="jump-metrics">${jumpMetrics()}</div>${jumpTargetControl()}${jumpDistanceControl()}<button id="jump-start" type="button">${t("출발")}</button><div class="jump-stage" aria-hidden="true"><span id="jumper" class="jumper"><span id="jump-emoji">🐙</span></span></div><div class="jump-caption"><span>${t("출발")}</span><span>${t("도착")}</span></div></section>${respawnView()}${defenseView()}`;
   const changed=[
     main.attacks.some((a,i)=>differs(a.percent,baseline.main.attacks[i].percent))||main.spread.some(s=>differs(s.value,s.base)),
     differs(sub.percent,sub.basePercent)||sub.effects.some(e=>differs(e.value,e.base)),
@@ -366,11 +389,7 @@ function renderResults() {
     result=calculate(state,data,catalogue);
     animateTenacity();
   });
-  $('respawn-jump-open').addEventListener('click',()=>openRespawnJump(result,baseline,t,timeLabel,seconds,jumpDistanceControl(),value=>{
-    $('jump-distance').value=value;
-    $('jump-distance').dispatchEvent(new Event('input'));
-    return {result,label:jumpDistanceLabel(),extra:$('jump-extra').innerHTML};
-  }));
+  $('respawn-jump-open').addEventListener('click',()=>openRespawnJump(result,baseline,t,timeLabel,seconds,jumpTargetControl()+jumpDistanceControl(),changeJump));
   $('respawn-active')?.addEventListener('change',event=>{
     state.respawnActive=event.target.checked;
     update();
@@ -384,14 +403,8 @@ function renderResults() {
   animateJump();
   animateInk();
   animateComparisons();
-  $('jump-distance')?.addEventListener('input',event=>{
-    state.jumpDistance=Math.round(Number(event.target.value)*data.rules.distancePerCell);
-    result=calculate(state,data,catalogue);
-    $('jump-distance-value').textContent=jumpDistanceLabel();
-    event.target.setAttribute('aria-valuetext',jumpDistanceLabel());
-    $('jump-extra').innerHTML=`${timeLabel(result.jump.extraFrames)}`;
-    $('jump-metrics').innerHTML=jumpMetrics();
-    animateJump();
+  ['jump-target','jump-beacon-ap','jump-distance'].forEach(id=>{
+    $(id)?.addEventListener(id==='jump-target'?'change':'input',event=>changeJump(id,id==='jump-target'?event.target.checked:event.target.value));
   });
 }
 

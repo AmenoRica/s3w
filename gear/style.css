@@ -143,3 +143,5 @@
 .frame-note,.tank-duration .frame-note,.metric-value .frame-note,.respawn-heading .frame-note,.stat-row .frame-note{font-size:11px;font-weight:400;color:#777;margin-left:6px;white-space:nowrap}.motion-start,#surge-start,#jump-start,#journey-start{margin:8px 0 12px}
 
 .journey-summaries{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}.journey-summaries .respawn-heading{display:block;margin-bottom:4px}.journey-summaries .respawn-heading strong{display:block;margin-top:4px}.journey-summaries .small-note{margin:4px 0}.journey-gauges{display:grid;gap:2px}.journey-gauges .respawn-gauge{height:25px;border-radius:3px}.journey-gauges .respawn-gauge b{position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:10px;font-weight:400;background:var(--color-paper);padding:0 4px;border-radius:2px}.journey-base{opacity:.45;filter:grayscale(1)}.journey-current{z-index:2;filter:drop-shadow(0 0 2px var(--color-highlight))}
+
+.jump-penalty[hidden] { display:none; }

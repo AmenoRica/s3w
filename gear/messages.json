@@ -3471,5 +3471,29 @@
     "ru": "Кувырки",
     "zh-Hans": "翻滚",
     "zh-Hant": "翻滾"
+  },
+  "설치자의 서브 성능 업": {
+    "en": "Placer’s Sub Power Up",
+    "ja": "設置者のサブ性能アップ",
+    "de": "Sekundärstärke des Aufstellers",
+    "es": "Potenciador secundario de quien lo coloca",
+    "fr": "Arme secondaire + du poseur",
+    "it": "Arma secondaria + di chi lo piazza",
+    "nl": "Subspektakel van de plaatser",
+    "ru": "Сила доп. оружия установившего",
+    "zh-Hans": "放置者的次要武器性能提升",
+    "zh-Hant": "設置者的次要武器性能提升"
+  },
+  "비컨 대상 점프": {
+    "en": "Jump to a Squid Beakon",
+    "ja": "ジャンプビーコンにジャンプ",
+    "de": "Sprung zu einem Sprungbojen-Ziel",
+    "es": "Salto a una baliza",
+    "fr": "Saut vers une balise",
+    "it": "Salto verso un trasferitore",
+    "nl": "Sprong naar een springbaken",
+    "ru": "Прыжок к маячку",
+    "zh-Hans": "跳跃至跳跃信标",
+    "zh-Hant": "跳躍至跳躍信標"
   }
 }

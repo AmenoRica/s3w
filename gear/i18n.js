@@ -14,7 +14,7 @@ export function applyStatic() {
   for (const attr of ['aria-label','placeholder','title']) document.querySelectorAll('[data-l10n-'+attr+']').forEach(node => node.setAttribute(attr, t(node.getAttribute('data-l10n-'+attr))));
 }
 export async function setupLanguage(catalogue, onChange) {
-  const responses = await Promise.all([fetch('./messages.json?v=20260921-attack-counts'), fetch('./gear-names.json')]);
+  const responses = await Promise.all([fetch('./messages.json?v=20260921-beacon-jump'), fetch('./gear-names.json')]);
   if (responses.some(response => !response.ok)) throw new Error('Could not load translations. Please reload.');
   [messages, names] = await Promise.all(responses.map(response => response.json()));
   abilityKeys = Object.fromEntries(Object.entries(names.KRko).map(([key, name]) => [name, key]));

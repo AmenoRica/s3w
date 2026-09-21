@@ -1,4 +1,4 @@
-import {initialState, validateState} from './core.js?v=20260921-sub-defense';
+import {initialState, validateState} from './core.js?v=20260921-beacon-jump';
 const PARTS = ['head', 'clothes', 'shoes'];
 // URL-only codes; calculations and icon paths keep the original ability keys.
 const CODES = new Map(Object.entries({

@@ -5,14 +5,14 @@ export function journeyAt(respawn, jump, frame) {
   return {total, progress, phase: frame < respawn ? '부활 중' : frame < takeoff ? '차지 중' : frame < total ? '비행 중' : '도착'};
 }
 
-export function openRespawnJump(result, baseline, t, duration, seconds, distanceControl, changeDistance) {
+export function openRespawnJump(result, baseline, t, duration, seconds, controls, changeJump) {
   const dialog = document.createElement('dialog');
   dialog.id = 'respawn-jump';
   dialog.className = 'ink-test-dialog respawn-jump-dialog';
   dialog.setAttribute('aria-labelledby', 'respawn-jump-title');
   const rows = [baseline, result].map(r => ({respawn:r.respawn.frames, jump:r.jump}));
   const totals = rows.map(r => journeyAt(r.respawn, r.jump, 0).total);
-  dialog.innerHTML = `<div class="test-heading"><h2 id="respawn-jump-title">${t('부활+점프')}</h2><button type="button" aria-label="${t('닫기')}">×</button></div><p class="small-note">${t('사망 → 부활 → 슈퍼 점프 → 도착')}</p><button id="journey-start" type="button">${t("출발")}</button>${distanceControl.replaceAll('jump-distance','journey-distance').replaceAll('jump-extra','journey-extra')}<div class="journey-summaries">${rows.map((r,i)=>`<section class="journey-row ${i?'':'respawn-base'}"><div class="respawn-heading"><h3>${t(i?'현재 조합':'기본')}</h3><strong>${duration(totals[i])}</strong></div><p class="small-note">${t('부활 시간')} ${seconds(r.respawn)} + ${t('슈퍼 점프')} ${seconds(r.jump.arrivalMax)} ${t('초')}</p></section>`).join('')}</div><div class="journey-gauges">${rows.map((r,i)=>`<div class="${i?'':'respawn-base'}"><div class="respawn-gauge" role="progressbar" aria-label="${t(i?'현재 조합':'기본')} · ${t('부활 시간')}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i><b>${t(i?'현재 조합':'기본')}</b><span>0%</span></div></div>`).join('')}</div><div class="journey-track" aria-hidden="true"><span class="journey-home">🏠</span><span class="journey-traveler journey-base">👻</span><span class="journey-traveler journey-current">👻</span><span class="journey-end">⚑</span></div><div class="jump-caption"><span>${t('출발')}</span><span>${t('도착')}</span></div>`;
+  dialog.innerHTML = `<div class="test-heading"><h2 id="respawn-jump-title">${t('부활+점프')}</h2><button type="button" aria-label="${t('닫기')}">×</button></div><p class="small-note">${t('사망 → 부활 → 슈퍼 점프 → 도착')}</p><button id="journey-start" type="button">${t("출발")}</button>${controls.replaceAll('jump-','journey-')}<div class="journey-summaries">${rows.map((r,i)=>`<section class="journey-row ${i?'':'respawn-base'}"><div class="respawn-heading"><h3>${t(i?'현재 조합':'기본')}</h3><strong>${duration(totals[i])}</strong></div><p class="small-note">${t('부활 시간')} ${seconds(r.respawn)} + ${t('슈퍼 점프')} ${seconds(r.jump.arrivalMax)} ${t('초')}</p></section>`).join('')}</div><div class="journey-gauges">${rows.map((r,i)=>`<div class="${i?'':'respawn-base'}"><div class="respawn-gauge" role="progressbar" aria-label="${t(i?'현재 조합':'기본')} · ${t('부활 시간')}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i><b>${t(i?'현재 조합':'기본')}</b><span>0%</span></div></div>`).join('')}</div><div class="journey-track" aria-hidden="true"><span class="journey-home">🏠</span><span class="journey-traveler journey-base">👻</span><span class="journey-traveler journey-current">👻</span><span class="journey-end">⚑</span></div><div class="jump-caption"><span>${t('출발')}</span><span>${t('도착')}</span></div>`;
   document.body.append(dialog);
   const nodes = [...dialog.querySelectorAll('.journey-row')];
   const travelers = [...dialog.querySelectorAll('.journey-traveler')];
@@ -42,20 +42,26 @@ export function openRespawnJump(result, baseline, t, duration, seconds, distance
     });
     if (started && !reduced && frame<cycle) raf = requestAnimationFrame(draw);
   }
-  dialog.querySelector('#journey-distance')?.addEventListener('input',event=>{
-    const next = changeDistance(event.target.value);
+  ['target','beacon-ap','distance'].forEach(key=>dialog.querySelector('#journey-'+key)?.addEventListener(key==='target'?'change':'input',event=>{
+    const next = changeJump('jump-'+key,key==='target'?event.target.checked:event.target.value);
     rows[1] = {respawn:next.result.respawn.frames,jump:next.result.jump};
     totals[1] = journeyAt(rows[1].respawn,rows[1].jump,0).total;
     cycle = Math.max(...totals);
     nodes[1].querySelector('.respawn-heading strong').innerHTML = `${duration(totals[1])}`;
     nodes[1].querySelector('.small-note').textContent = `${t('부활 시간')} ${seconds(rows[1].respawn)} + ${t('슈퍼 점프')} ${seconds(rows[1].jump.arrivalMax)} ${t('초')}`;
-    dialog.querySelector('#journey-distance-value').textContent = next.label;
-    event.target.setAttribute('aria-valuetext',next.label);
-    dialog.querySelector('#journey-extra').innerHTML = next.extra;
+    dialog.querySelector('#journey-beacon-control').hidden=next.target!=='beacon';
+    dialog.querySelector('#journey-beacon-ap').value=next.result.jump.beaconSubAP;
+    dialog.querySelector('#journey-beacon-ap').setAttribute('aria-valuetext',next.beaconLabel);
+    dialog.querySelector('#journey-beacon-value').textContent=next.beaconLabel;
+    if(dialog.querySelector('#journey-distance')) {
+      dialog.querySelector('#journey-distance-value').textContent = next.label;
+      dialog.querySelector('#journey-distance').setAttribute('aria-valuetext',next.label);
+      dialog.querySelector('#journey-extra').innerHTML = next.extra;
+    }
     frame=0;previous=null;started=false;
     cancelAnimationFrame(raf);
     draw(performance.now());
-  });
+  }));
   dialog.querySelector('#journey-start').addEventListener('click',()=>{
     cancelAnimationFrame(raf);frame=0;previous=null;started=true;draw(performance.now());
   });
