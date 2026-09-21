@@ -140,7 +140,9 @@ python3 update-data.py
 - `data.js`: 원본에서 추출한 게임 데이터
 - `assets/`: 로컬 이미지·글꼴
 - `update-data.py`: 원본 수집 및 추출
-- `sources.json`, `verification.json`: 데이터 기준과 검증 기록
+- `sources.json`: 데이터 기준
+- `verification.json`: 로컬에만 보관하는 검증 기록
+- 배포에서 참조하지 않는 과거 지형 추출 파일은 로컬에만 보관하며 `.gitignore`로 재업로드를 막습니다. 현재 지형과 예비 지형은 저장소에 유지합니다.
 
 디자인에 [Nutlope/Hallmark](https://github.com/Nutlope/hallmark)를 적용했습니다.
 Catalogue 구성, Brutal의 굵은 선과 제목, Splatoon을 연상시키는 잉크색·라임 포인트를 사용합니다.
