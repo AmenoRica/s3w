@@ -1,4 +1,4 @@
-import {openRespawnJump} from './respawn-jump.js?v=20260921-smooth-gauge';
+import {openRespawnJump} from './respawn-jump.js?v=20260921-overlay';
 import {openInkTest} from './ink-test.js?v=20260921-ballpoint';
 import {selectionImage} from './export-image.js?v=20260921-totals-shift';
 import {t, setupLanguage, languageCode, applyStatic, gearName} from './i18n.js?v=20260921-ballpoint';
@@ -10,6 +10,17 @@ const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<'
 const number = (value, digits = 2) => value == null ? t("미확인") : value.toLocaleString(languageCode(), {maximumFractionDigits:digits});
 let data, catalogue, locale, state = initialState(), result, paused = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let jumpAnimation, phaseAnimationId, inkAnimationId, respawnAnimationId, tenacityAnimationId, tenacityAnimation, tankAnimations = [], comparisonAnimations = [];
+const seconds = frames => (Math.max(0,Math.ceil(frames / 60 * 100 - 1e-9)) / 100).toLocaleString(languageCode(), {minimumFractionDigits:2, maximumFractionDigits:2});
+const timeLabel = frames => `${seconds(frames)} ${t("초")} <small class="frame-note">${number(frames)} ${t("프레임")}</small>`;
+let manualGroups = [];
+function manualStart(button, animations) {
+  animations.forEach(animation=>{animation.pause();animation.currentTime=0;});
+  const group={animations,started:false};manualGroups.push(group);
+  button.onclick=()=>{
+    group.started=true;
+    animations.forEach(animation=>{animation.currentTime=0;animation.play();if(paused)animation.finish();});
+  };
+}
 let dragSource = null;
 let selectedAbility = null, touchDrag = null, suppressClickUntil = 0;
 
@@ -196,9 +207,11 @@ function fold(label,changed,body) {
 }
 
 function metric(label, value, unit, base, digits = 2) {
+  if(unit===t("프레임"))return `<div><div class="metric-label">${escape(t(label))}</div><div class="metric-value">${timeLabel(value)}</div>${base==null?'':`<div class="baseline metric-baseline">${t("기본")} ${timeLabel(base)}</div>`}</div>`;
   return `<div><div class="metric-label">${escape(t(label))}</div><div class="metric-value">${number(value,digits)}${value == null ? '' : `<small>${escape(t(unit))}</small>`}</div>${base == null ? '' : `<div class="baseline metric-baseline">${t("기본")} ${number(base,digits)} ${escape(t(unit))}</div>`}</div>`;
 }
 function stat(label, value, unit, base) {
+  if(unit==='초'||unit===t("초"))return `<div class="stat-row"><span>${escape(t(label))}</span><strong>${timeLabel(value*60)}${base==null?'':`<span class="baseline">${t("기본")} ${timeLabel(base*60)}</span>`}</strong></div>`;
   return `<div class="stat-row"><span>${escape(t(label))}</span><strong>${number(value)} ${escape(t(unit))}${base == null ? '' : `<span class="baseline">${t("기본")} ${number(base)} ${escape(t(unit))}</span>`}</strong></div>`;
 }
 function distanceBars(base,value,unit='칸') {
@@ -222,7 +235,7 @@ function track(speed, base, emoji, enemyInk=false) {
   const splashes='<i class="splash splash-one"></i><i class="splash splash-two"></i><i class="splash splash-three"></i><i class="splash splash-four"></i><i class="splash splash-five"></i><i class="splash splash-six"></i>';
   const swimming=emoji==='🐙',ninja=result.points.equipped.includes('SquidMoveSpatter_Reduction');
   const character=swimming?`<span class="swim-emoji">${emoji}</span>`:`<span class="human-emoji">${emoji}</span>`;
-  return `<div class="motion-track ${enemyInk?'enemy-ink-track':''}" data-speed="${speed}" data-base="${base}" aria-hidden="true"><span class="runner runner-reference">${character}${swimming?splashes:''}</span><span class="runner runner-current">${character}${swimming&&!ninja?splashes:''}</span></div><div class="track-labels" aria-hidden="true"><span>0</span><span>1</span><span>2</span><span>3</span><span>${t("4칸")}</span></div>`;
+  return `<button type="button" class="motion-start">${t("출발")}</button><div class="motion-track ${enemyInk?'enemy-ink-track':''}" data-speed="${speed}" data-base="${base}" aria-hidden="true"><span class="runner runner-reference">${character}${swimming?splashes:''}</span><span class="runner runner-current">${character}${swimming&&!ninja?splashes:''}</span></div><div class="track-labels" aria-hidden="true"><span>0</span><span>1</span><span>2</span><span>3</span><span>${t("4칸")}</span></div>`;
 }
 
 function throwView() {
@@ -243,18 +256,18 @@ function animateThrows(add){
 
 function surgeView() {
   const {frames,baseFrames}=result.surge;
-  return `<section class="result-card full-width" aria-label="${t("징어클라임 충전 비교")}">${title(t("징어클라임"))}<div class="surge-comparison">${[[t("기본"),baseFrames,'base'],[t("현재 조합"),frames,'current']].map(([label,time,key])=>`<div><h3>${label}</h3><div class="surge-wall"><span class="surge-squid" data-frames="${time}"><span class="surge-emoji">🐙</span></span><div class="surge-gauge"><i data-frames="${time}"></i></div></div><strong>${number(time/60,3)} ${t("초")}</strong><p class="small-note">${time} ${t("프레임")}</p></div>`).join('')}</div></section>`;
+  return `<section class="result-card full-width" aria-label="${t("징어클라임 충전 비교")}">${title(t("징어클라임"))}<button id="surge-start" type="button">${t("출발")}</button><div class="surge-comparison">${[[t("기본"),baseFrames,'base'],[t("현재 조합"),frames,'current']].map(([label,time,key])=>`<div><h3>${label}</h3><div class="surge-wall"><span class="surge-squid" data-frames="${time}"><span class="surge-emoji">🐙</span></span><div class="surge-gauge"><i data-frames="${time}"></i></div></div><strong>${timeLabel(time)}</strong></div>`).join('')}</div></section>`;
 }
 function tenacityView() {
   const charge=result.special.tenacityCharge;
   if(!charge)return '';
-  return fold(t("역경 강화 · 자동 충전"),charge.rate>0,`<label class="condition-select lde-slider" for="tenacity-deficit"><span>${t("부족한 아군 생존 인원 ")}<output id="tenacity-deficit-value">${t("{n}명 차이",{n:state.tenacityDeficit})}</output></span><input id="tenacity-deficit" aria-label="${t("역경 강화 인원 차이")}" type="range" min="0" max="3" step="1" value="${state.tenacityDeficit}"><span class="range-ends"><span>${t("0명")}</span><span>${t("3명")}</span></span></label><div class="tenacity-meter"><div class="respawn-heading"><strong id="tenacity-duration">${charge.frames?number(charge.frames/60,2)+t("초"):t("미발동")}</strong><small id="tenacity-rate">${number(charge.rate)} ${t("p/초")}</small></div><div class="respawn-gauge" aria-hidden="true"><i id="tenacity-fill"></i><span id="tenacity-progress">0%</span></div></div>`);
+  return fold(t("역경 강화 · 자동 충전"),charge.rate>0,`<label class="condition-select lde-slider" for="tenacity-deficit"><span>${t("부족한 아군 생존 인원 ")}<output id="tenacity-deficit-value">${t("{n}명 차이",{n:state.tenacityDeficit})}</output></span><input id="tenacity-deficit" aria-label="${t("역경 강화 인원 차이")}" type="range" min="0" max="3" step="1" value="${state.tenacityDeficit}"><span class="range-ends"><span>${t("0명")}</span><span>${t("3명")}</span></span></label><div class="tenacity-meter"><div class="respawn-heading"><strong id="tenacity-duration">${charge.frames?timeLabel(charge.frames):t("미발동")}</strong><small id="tenacity-rate">${number(charge.rate)} ${t("p/초")}</small></div><div class="respawn-gauge" aria-hidden="true"><i id="tenacity-fill"></i><span id="tenacity-progress">0%</span></div></div>`);
 }
 
 function respawnView() {
   const r=result.respawn;
   const toggle=state.slots.flat().includes('RespawnTime_Save')?`<label class="toggle-label"><span><strong>${t("부활 시간 단축")}</strong><small>${t("발동 조건 충족")}</small></span><input id="respawn-active" type="checkbox" role="switch" ${state.respawnActive?'checked':''}></label>`:'';
-  return `<section class="result-card full-width" aria-label="${t("부활 시간 계산 결과")}">${title(t("부활 시간"))}<button id="respawn-jump-open" type="button" aria-haspopup="dialog">${t("부활+점프 테스트")}</button>${toggle}<div class="respawn-comparison">${[[t("기본"),r.baseFrames,'base'],[t("현재 조합"),r.frames,'current']].map(([label,frames,key])=>`<div class="respawn-row ${key==='base'?'respawn-base':''}"><div class="respawn-heading"><h3>${label}</h3><strong>${number(frames/60,3)} ${t("초")} <small>${frames} ${t("프레임")}</small></strong></div><div class="respawn-gauge" aria-hidden="true"><i id="respawn-${key}" data-frames="${frames}"></i><span id="respawn-${key}-status">${t("부활 중")}</span></div></div>`).join('')}</div></section>`;
+  return `<section class="result-card full-width" aria-label="${t("부활 시간 계산 결과")}">${title(t("부활 시간"))}<button id="respawn-jump-open" type="button" aria-haspopup="dialog">${t("부활+점프 테스트")}</button>${toggle}<div class="respawn-comparison">${[[t("기본"),r.baseFrames,'base'],[t("현재 조합"),r.frames,'current']].map(([label,frames,key])=>`<div class="respawn-row ${key==='base'?'respawn-base':''}"><div class="respawn-heading"><h3>${label}</h3><strong>${timeLabel(frames)}</strong></div><div class="respawn-gauge" aria-hidden="true"><i id="respawn-${key}" data-frames="${frames}"></i><span id="respawn-${key}-status">${t("부활 중")}</span></div></div>`).join('')}</div></section>`;
 }
 
 function jumpDistanceLabel() {
@@ -262,14 +275,14 @@ function jumpDistanceLabel() {
 }
 function jumpDistanceControl() {
   if(!result.points.equipped.includes('SuperJumpSign_Hide'))return '';
-  return `<label class="jump-penalty" for="jump-distance"><span>${t("스텔스 점프 거리 ")}<output id="jump-distance-value">${jumpDistanceLabel()}</output></span><input id="jump-distance" aria-label="${t("스텔스 점프 거리")}" aria-valuetext="${jumpDistanceLabel()}" type="range" min="12" max="20" step="0.2" value="${state.jumpDistance/data.rules.distancePerCell}"><span class="range-ends"><span>${t("12칸 이하")}</span><span>${t("20칸 이상")}</span></span></label><p class="small-note">${t("추가 비행 ")}<strong id="jump-extra">${number(result.jump.extraFrames/60,3)} ${t("초")} · ${result.jump.extraFrames} ${t("프레임")}</strong>${t(" · 스텔스 점프 보정은 정확하지 않을 수 있습니다")}</p>`;
+  return `<label class="jump-penalty" for="jump-distance"><span>${t("스텔스 점프 거리 ")}<output id="jump-distance-value">${jumpDistanceLabel()}</output></span><input id="jump-distance" aria-label="${t("스텔스 점프 거리")}" aria-valuetext="${jumpDistanceLabel()}" type="range" min="12" max="20" step="0.2" value="${state.jumpDistance/data.rules.distancePerCell}"><span class="range-ends"><span>${t("12칸 이하")}</span><span>${t("20칸 이상")}</span></span></label><p class="small-note">${t("추가 비행 ")}<strong id="jump-extra">${timeLabel(result.jump.extraFrames)}</strong>${t(" · 스텔스 점프 보정은 정확하지 않을 수 있습니다")}</p>`;
 }
 function jumpMetrics() {
   const j=result.jump;
   return `${metric(t("차지"),j.chargeFrames,t("프레임"),80)}${metric(t("비행 + 패널티"),j.flightFrames+j.extraFrames,t("프레임"),138)}${metric(t("입력부터 도착까지"),j.arrivalMax,t("프레임"),218)}`;
 }
 function inkTank(id,frames,isBase=false) {
-  return `<div class="tank-column ${isBase?'tank-base':''}"><div class="tank-frame" aria-hidden="true"><div class="tank-cap"></div><div class="tank-body"><div id="${id}" class="ink-fill"></div><div class="tank-ticks"></div><span id="${id}-percent" class="tank-percent">0%</span></div></div><p class="tank-duration">${number(frames/60,3)}<small>${t("초")}</small></p><p class="small-note">${frames} ${t("프레임")}</p></div>`;
+  return `<div class="tank-column ${isBase?'tank-base':''}"><div class="tank-frame" aria-hidden="true"><div class="tank-cap"></div><div class="tank-body"><div id="${id}" class="ink-fill"></div><div class="tank-ticks"></div><span id="${id}-percent" class="tank-percent">0%</span></div></div><p class="tank-duration">${timeLabel(frames)}</p></div>`;
 }
 
 function blastGraph(blast) {
@@ -285,7 +298,7 @@ function defenseEffects() {
   const d=result.defense;
   const blastViews=d.blasts.map(blastGraph).join('');
   const mark=d.marking;
-  const marking=mark?`<h3>${t("마킹 지속")}</h3><div class="defense-pair defense-marking">${[[t("기본"),mark.baseFrames],[t("현재 조합"),mark.frames]].map(([label,frames])=>`<div><div class="respawn-heading"><h4>${label}</h4><strong>${number(frames/60,3)} ${t("초")}</strong></div><div class="respawn-gauge" aria-hidden="true"><i class="marking-fill" data-frames="${frames}"></i></div></div>`).join('')}</div>`:'';
+  const marking=mark?`<h3>${t("마킹 지속")}</h3><div class="defense-pair defense-marking">${[[t("기본"),mark.baseFrames],[t("현재 조합"),mark.frames]].map(([label,frames])=>`<div><div class="respawn-heading"><h4>${label}</h4><strong>${timeLabel(frames)}</strong></div><div class="respawn-gauge" aria-hidden="true"><i class="marking-fill" data-frames="${frames}"></i></div></div>`).join('')}</div>`:'';
   const mist=d.mist?`<p class="small-note">${t("제공된 단계별 수치 기준")}</p>${d.mist.movement.map(m=>`<div class="mist-track"><h3>${t(m.label)}</h3>${stat(t("이동 속도"),m.value,t("칸/초"),m.base)}<p class="small-note">${t("정상 속도 대비")} ${number(m.baseRatio*100,1)}% → ${number(m.ratio*100,1)}%</p>${track(m.value,m.base,m.emoji)}</div>`).join('')}`:'';
   return `${d.blasts.length?`<p class="small-note">${t("단일 폭발 · 평지 기준")}</p><div class="defense-blasts">${blastViews}</div>`:''}${d.direct?stat(t("직격 피해"),d.direct.value,'',d.direct.base):''}${marking}${mist}`;
 }
@@ -318,10 +331,10 @@ function renderResults() {
     <section class="result-card" aria-label="${t("메인 계산 결과")}">${title(t("메인"),`Path_Wst_${weapon.key}`)}<button type="button" class="ink-test-open" data-ink-test>${t("발사 테스트")}</button>${attackRows}${spreads}</section>
     <section class="result-card" aria-label="${t("서브 계산 결과")}">${title(t("서브"),`Wsb_${weapon.sub}00`)}<p class="small-note">${escape(locale.sub[weapon.sub])}</p><button type="button" class="ink-test-open" data-ink-test>${t("테스트")}</button>${fold(t("최대 사용 횟수 · 1회 잉크 소비"),differs(sub.count,sub.baseCount)||differs(sub.percent,sub.basePercent),`<div class="paired-metrics">${metric(t("최대 사용 횟수"),sub.count,t("회"),sub.baseCount)}${metric(t("1회 잉크 소비"),Math.ceil(sub.percent*1000-1e-9)/1000,'%',sub.basePercent,3)}</div>`)}<h3>${t("서브 성능 업")}</h3>${effects(sub.effects)}${sub.throw?fold(sub.throw.mode==='slide'?t("평지 이동 거리"):t("최대 투척 거리(근사치)"),differs(sub.throw.value,sub.throw.base),throwView()):''}</section>
     <section class="result-card full-width" aria-label="${t("스페셜 계산 결과")}">${title(t("스페셜"),`Wsp_${weapon.special}00`)}<p class="small-note">${escape(locale.special[weapon.special])}</p><div class="special-grid">${fold(t("필요 포인트 · 사망 시 잃는 포인트"),differs(special.points,weapon.sp)||differs(special.loss,50),`<div class="paired-metrics special-points">${metric(t("필요 포인트"),special.points,'p',weapon.sp)}${metric(t("사망 시 잃는 포인트"),special.loss,'%',50)}</div>`)}<div><h3>${t("스페셜 성능 업")}</h3>${effects(special.effects)}${tenacityView()}</div></div></section>
-    <section class="result-card full-width" aria-label="${t("잉크 회복 계산 결과")}"><div class="card-title"><h2>${t("잉크 회복")}</h2></div><div class="ink-comparison">${inkTank('ink-base',recovery.baseFrames,true)}<div class="tank-difference"><span>${t("회복 시간")}</span><strong>${recovery.baseFrames===recovery.frames?t("동일"):t('{n}초 단축',{n:number((recovery.baseFrames-recovery.frames)/60,3)})}</strong></div>${inkTank('ink-current',recovery.frames)}</div></section>
-    <section class="result-card full-width" aria-label="${t("이동 속도 계산 결과")}">${title(t("이동 속도"))}${movement.map(m=>fold(m.label,differs(m.value,m.base),`<div class="movement-row"><div class="motion-heading"><h3>${escape(t(m.label))}</h3><div class="speed-value">${number(m.value,3)} <small>${m.value == null ? '' : t("칸/초")}</small></div></div><p class="small-note">${m.base == null ? '' : `${t("기본")} ${number(m.base,3)} ${t("칸/초")}${m.value ? ` · ${t("편도 {n}초",{n:number(4/m.value)})}` : ''}`}${m.note ? ' · '+escape(t(m.note)) : ''}</p>${track(m.value,m.base,m.emoji,m.enemyInk)}</div>`)).join('')}</section>
+    <section class="result-card full-width" aria-label="${t("잉크 회복 계산 결과")}"><div class="card-title"><h2>${t("잉크 회복")}</h2></div><div class="ink-comparison">${inkTank('ink-base',recovery.baseFrames,true)}<div class="tank-difference"><span>${t("회복 시간")}</span><strong>${recovery.baseFrames===recovery.frames?t("동일"):t('{n}초 단축',{n:seconds(recovery.baseFrames-recovery.frames)})}</strong></div>${inkTank('ink-current',recovery.frames)}</div></section>
+    <section class="result-card full-width" aria-label="${t("이동 속도 계산 결과")}">${title(t("이동 속도"))}${movement.map(m=>fold(m.label,differs(m.value,m.base),`<div class="movement-row"><div class="motion-heading"><h3>${escape(t(m.label))}</h3><div class="speed-value">${number(m.value,3)} <small>${m.value == null ? '' : t("칸/초")}</small></div></div>${m.note ? `<p class="small-note">${escape(t(m.note))}</p>` : ''}${track(m.value,m.base,m.emoji,m.enemyInk)}</div>`)).join('')}</section>
     ${surgeView()}
-    <section class="result-card full-width" aria-label="${t("슈퍼 점프 계산 결과")}">${title(t("슈퍼 점프"))}<div id="jump-metrics" class="jump-metrics">${jumpMetrics()}</div>${jumpDistanceControl()}<div class="jump-stage" aria-hidden="true"><span id="jumper" class="jumper"><span id="jump-emoji">🐙</span></span></div><div class="jump-caption"><span>${t("출발")}</span><span>${t("도착")}</span></div></section>${respawnView()}${defenseView()}`;
+    <section class="result-card full-width" aria-label="${t("슈퍼 점프 계산 결과")}">${title(t("슈퍼 점프"))}<div id="jump-metrics" class="jump-metrics">${jumpMetrics()}</div>${jumpDistanceControl()}<button id="jump-start" type="button">${t("출발")}</button><div class="jump-stage" aria-hidden="true"><span id="jumper" class="jumper"><span id="jump-emoji">🐙</span></span></div><div class="jump-caption"><span>${t("출발")}</span><span>${t("도착")}</span></div></section>${respawnView()}${defenseView()}`;
   const changed=[
     main.attacks.some((a,i)=>differs(a.percent,baseline.main.attacks[i].percent))||main.spread.some(s=>differs(s.value,s.base)),
     differs(sub.percent,sub.basePercent)||sub.effects.some(e=>differs(e.value,e.base)),
@@ -353,10 +366,10 @@ function renderResults() {
     result=calculate(state,data,catalogue);
     animateTenacity();
   });
-  $('respawn-jump-open').addEventListener('click',()=>openRespawnJump(result,baseline,t,number,jumpDistanceControl(),value=>{
+  $('respawn-jump-open').addEventListener('click',()=>openRespawnJump(result,baseline,t,timeLabel,seconds,jumpDistanceControl(),value=>{
     $('jump-distance').value=value;
     $('jump-distance').dispatchEvent(new Event('input'));
-    return {result,label:jumpDistanceLabel(),extra:$('jump-extra').textContent};
+    return {result,label:jumpDistanceLabel(),extra:$('jump-extra').innerHTML};
   }));
   $('respawn-active')?.addEventListener('change',event=>{
     state.respawnActive=event.target.checked;
@@ -376,7 +389,7 @@ function renderResults() {
     result=calculate(state,data,catalogue);
     $('jump-distance-value').textContent=jumpDistanceLabel();
     event.target.setAttribute('aria-valuetext',jumpDistanceLabel());
-    $('jump-extra').textContent=`${number(result.jump.extraFrames/60,3)} ${t("초")} · ${result.jump.extraFrames} ${t("프레임")}`;
+    $('jump-extra').innerHTML=`${timeLabel(result.jump.extraFrames)}`;
     $('jump-metrics').innerHTML=jumpMetrics();
     animateJump();
   });
@@ -402,12 +415,13 @@ function animateInk() {
 }
 
 function animateComparisons() {
-  comparisonAnimations.forEach(animation=>animation.cancel());comparisonAnimations=[];
+  comparisonAnimations.forEach(animation=>animation.cancel());comparisonAnimations=[];manualGroups=manualGroups.filter(group=>group.animations.includes(jumpAnimation));
   const add=(node,frames,duration)=>{
     const animation=node.animate(frames,{duration,iterations:Infinity,easing:'linear'});
-    if(paused||document.hidden)animation.pause();comparisonAnimations.push(animation);
+    if(paused||document.hidden)animation.pause();comparisonAnimations.push(animation);return animation;
   };
   document.querySelectorAll('.motion-track').forEach(track=>{
+    const first=comparisonAnimations.length;
     const speeds=[Number(track.dataset.base),Number(track.dataset.speed)];
     const timing=movementTiming(...speeds);
     track.querySelectorAll('.runner').forEach((runner,i)=>{
@@ -419,6 +433,13 @@ function animateComparisons() {
       if(human)add(human,[{transform:'scaleX(-1)',offset:0},{transform:'scaleX(-1)',offset:end/2},{transform:'scaleX(1)',offset:end/2},{transform:'scaleX(1)',offset:end},{transform:'scaleX(-1)',offset:end},{transform:'scaleX(-1)',offset:1}],timing.duration);
       runner.querySelectorAll('.splash').forEach((particle,j)=>add(particle,[{opacity:.75,transform:'translate(0,0) scale(.4)',offset:0},{opacity:0,transform:'translate(var(--dx),var(--dy,-13px)) scale(1)',offset:.8},{opacity:0,offset:1}],430+j*55));
     });
+    const animations=comparisonAnimations.slice(first);
+    animations.forEach(animation=>{
+      const particle=animation.effect.target.classList.contains('splash');
+      const iterations=particle?Math.ceil(timing.duration/animation.effect.getTiming().duration):1;
+      animation.effect.updateTiming({iterations,duration:timing.duration/iterations,fill:'forwards'});
+    });
+    manualStart(track.previousElementSibling,animations);
   });
   if(result.defense.marking){
     const cycle=(result.defense.marking.baseFrames/60+1)*1000;
@@ -427,6 +448,7 @@ function animateComparisons() {
       add(node,[{width:'100%',offset:0},{width:'0%',offset:end},{width:'0%',offset:1}],cycle);
     });
   }
+  const surgeFirst=comparisonAnimations.length;
   const cycle=(result.surge.baseFrames/60+1.2)*1000;
   document.querySelectorAll('.surge-gauge i').forEach(node=>{
     const charge=Number(node.dataset.frames)/60*1000/cycle;
@@ -440,6 +462,9 @@ function animateComparisons() {
     add(node.querySelector('.surge-emoji'),shake,cycle);
     add(node,[{transform:'translateY(0)',offset:0},{transform:'translateY(0)',offset:charge},{transform:'translateY(-70px)',offset:charge+250/cycle},{transform:'translateY(-70px)',offset:1}],cycle);
   });
+  const surgeAnimations=comparisonAnimations.slice(surgeFirst);
+  surgeAnimations.forEach(animation=>animation.effect.updateTiming({iterations:1,fill:'forwards'}));
+  manualStart($('surge-start'),surgeAnimations);
   cancelAnimationFrame(respawnAnimationId);
   const respawnCycle=(Math.max(result.respawn.frames,result.respawn.baseFrames)/60+1)*1000;
   const respawnAnimations=['base','current'].map(key=>{
@@ -464,7 +489,7 @@ function animateTenacity() {
   tenacityAnimation?.cancel();tenacityAnimation=null;
   const charge=result.special.tenacityCharge;
   if(!charge)return;
-  $('tenacity-duration').textContent=charge.frames?number(charge.frames/60,2)+t("초"):t("미발동");
+  $('tenacity-duration').innerHTML=charge.frames?timeLabel(charge.frames):t("미발동");
   $('tenacity-rate').textContent=number(charge.rate)+t(" p/초");
   $('tenacity-progress').textContent='0%';
   if(!charge.frames)return;
@@ -480,6 +505,7 @@ function animateTenacity() {
 }
 
 function animateJump() {
+  manualGroups=manualGroups.filter(group=>!group.animations.includes(jumpAnimation));
   jumpAnimation?.cancel();cancelAnimationFrame(phaseAnimationId);
   const {chargeFrames,arrivalMax}=result.jump;
   const legFrames=arrivalMax+60, duration=legFrames/60*1000;
@@ -493,11 +519,11 @@ function animateJump() {
     }
     frames.push({offset:(leg+1)/2,left:dest,transform:'translate(-50%,0px)'});
   }
-  jumpAnimation=$('jumper').animate(frames,{duration:duration*2,iterations:Infinity,easing:'linear'});
-  if(paused||document.hidden)jumpAnimation.pause();
+  jumpAnimation=$('jumper').animate(frames,{duration:duration*2,iterations:1,fill:'forwards',easing:'linear'});
+  manualStart($('jump-start'),[jumpAnimation]);
   function phase(){
-    const elapsed=Number(jumpAnimation.currentTime||0)%duration;
-    const charging=elapsed<chargeFrames/60*1000,landed=elapsed>=arrivalMax/60*1000;
+    const elapsed=jumpAnimation.playState==='finished'?duration:Number(jumpAnimation.currentTime||0)%duration;
+    const charging=jumpAnimation.playState==='running'&&elapsed<chargeFrames/60*1000,landed=elapsed>=arrivalMax/60*1000;
     $('jump-emoji').textContent=landed?'🧍‍♂️':'🐙';
     $('jump-emoji').classList.toggle('charging',charging);
     phaseAnimationId=requestAnimationFrame(phase);
@@ -507,8 +533,11 @@ function animateJump() {
 
 function applyMotion() {
   document.body.classList.toggle('paused',paused);
-  if (jumpAnimation) paused ? jumpAnimation.pause() : jumpAnimation.play();
-  [...tankAnimations,...comparisonAnimations,tenacityAnimation].filter(Boolean).forEach(animation=>paused?animation.pause():animation.play());
+  [jumpAnimation,...tankAnimations,...comparisonAnimations,tenacityAnimation].filter(Boolean).forEach(animation=>{
+    const group=manualGroups.find(group=>group.animations.includes(animation));
+    if(group&&(!group.started||animation.playState==='finished'))return;
+    paused?animation.pause():animation.play();
+  });
 }
 
 function update() {
@@ -587,7 +616,7 @@ async function init() {
   $('cooler').addEventListener('change',event=>{state.cooler=event.target.checked;update();});
   $('reset').addEventListener('click',()=>{state={...initialState(),weapon:state.weapon};selectedAbility=null;renderPalette();renderGear();renderConditions();$('palette-status').textContent='';update();});
   document.addEventListener('visibilitychange',()=>{
-    if(document.hidden){jumpAnimation?.pause();[...tankAnimations,...comparisonAnimations,tenacityAnimation].filter(Boolean).forEach(animation=>animation.pause());document.body.classList.add('paused');}
+    if(document.hidden){[jumpAnimation,...tankAnimations,...comparisonAnimations,tenacityAnimation].filter(animation=>animation?.playState==='running').forEach(animation=>animation.pause());document.body.classList.add('paused');}
     else applyMotion();
   });
 }
