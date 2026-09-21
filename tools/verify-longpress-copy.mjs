@@ -30,7 +30,8 @@ for(const cancel of ['pointercancel','scroll','blur']) {
 }
 assert.deepEqual(tap(700,()=>emit('pointermove',{clientX:11})),[false],'moving cancels');
 assert.deepEqual(tap(700,()=>emit('pointerdown',{pointerId:2,isPrimary:false})),[false],'multitouch cancels');
-assert.deepEqual(tap(700,null,{detail:0}),[false],'keyboard activation is normal');
+copies.length=0;emit('click',{detail:0});assert.deepEqual(copies,[false],'keyboard activation is normal');
+copies.length=0;now+=2000;emit('pointerdown');now+=700;emit('pointerup');assert.deepEqual(copies,[true],'release copies even if the browser omits the subsequent click');
 assert.deepEqual(tap(100),[false],'next tap is not swallowed or redirected');
 assert.ok(emit('contextmenu').prevented,'native callout suppressed on copy buttons');
 const outside={closest:()=>null};
